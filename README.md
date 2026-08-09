@@ -1,8 +1,10 @@
 # SADIQ® — Portfolio
 
-A one-page portfolio site for a web designer specializing in landing pages,
-websites and Shopify design. Built as a single `index.html` — all CSS lives
-inside the file, no frameworks, no build tools, no JavaScript.
+A one-page portfolio site for a multi-disciplinary designer & writer —
+landing pages, web design, Shopify, graphic design and content writing.
+Built as a single `index.html` — all CSS and a small vanilla-JS enhancement
+script (scroll reveal + custom cursor) live inside the file. No frameworks,
+no build tools. The site works fully even with JavaScript disabled.
 
 ## Preview locally
 
