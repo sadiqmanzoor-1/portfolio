@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- Makes the page scale correctly on phones — required for responsive design -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SADIQ — web designer specializing in landing pages, websites and Shopify design for businesses in the US, UK and Western Europe.">
+  <title>SADIQ® — Web designer & landing page specialist</title>
+
+  <!-- Tiny inline favicon (a chartreuse square) so the browser doesn't 404.
+       It's an SVG encoded as a data URI — no extra file needed. -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23C9F24E'/%3E%3Ctext x='8' y='12' font-size='11' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='%2316130E'%3ES%3C/text%3E%3C/svg%3E">
+
+  <!-- Google Fonts: Archivo Black (display headings) + Space Grotesk (body).
+       preconnect = the browser opens the connection early, so fonts load faster.
+       If there's no internet the site still works — the fallback fonts kick in. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* =====================================================================
+       1. DESIGN TOKENS
+       All the colors, fonts and spacing live in CSS custom properties
+       ("variables") on :root. Change a value here and it updates everywhere.
+       ===================================================================== */
+    :root {
+      /* Palette */
+      --cream:      #F5F2EA;   /* canvas / page background            */
+      --ink:        #16130E;   /* near-black text & borders           */
+      --cobalt:     #2540FF;   /* electric accent (CTA, shadows)      */
+      --chartreuse: #C9F24E;   /* acid highlight (marker, stickers)   */
+      --paper:      #FDFBF4;   /* slightly-lighter card surface       */
+
+      /* Type */
+      --font-display: "Archivo Black", Impact, sans-serif;
+      --font-body:    "Space Grotesk", "Segoe UI", Arial, sans-serif;
+
+      /* Layout rhythm.
+         clamp(min, preferred, max) scales a value with the viewport,
+         so spacing is tight on phones and generous on desktop. */
+      --space-section: clamp(4.5rem, 12vw, 9rem);   /* gap between sections */
+      --space-gutter:  clamp(1.25rem, 5vw, 3rem);   /* left/right page padding */
+      --border: 2px solid var(--ink);               /* the one border style used everywhere */
+      --radius-card: 14px;
+    }
+
+    /* =====================================================================
+       2. RESET & BASE
+       A minimal reset so every browser starts from the same place.
+       ===================================================================== */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;   /* padding & border count INSIDE width — sane sizing */
+      margin: 0;
+    }
+
+    html {
+      /* Anchor links (nav → sections) glide instead of jumping */
+      scroll-behavior: smooth;
+      /* Sticky nav is ~72px tall; this stops sections hiding underneath it
+         when you jump to them via the nav links */
+      scroll-padding-top: 5.5rem;
+    }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 1.0625rem;         /* 17px — slightly bigger than default for readability */
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    /* Text selection in brand colors — small detail, big personality */
+    ::selection { background: var(--cobalt); color: #fff; }
+
+    /* Visible keyboard-focus ring for accessibility.
+       :focus-visible only shows it for keyboard users, not mouse clicks. */
+    :focus-visible {
+      outline: 3px solid var(--cobalt);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    /* =====================================================================
+       3. REUSABLE UTILITIES
+       Small classes used across several sections.
+       ===================================================================== */
+
+    /* Centers content and applies the page gutters. Every section uses it. */
+    .container {
+      max-width: 1160px;
+      margin-inline: auto;          /* shorthand for margin-left + margin-right */
+      padding-inline: var(--space-gutter);
+    }
+
+    /* Display headings: Archivo Black, uppercase, tight line-height */
+    .display {
+      font-family: var(--font-display);
+      font-weight: 400;             /* Archivo Black only has one weight */
+      text-transform: uppercase;
+      line-height: 0.95;
+      letter-spacing: -0.01em;
+    }
+
+    /* Small uppercase label above headings ("eyebrow") */
+    .eyebrow {
+      display: inline-block;
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--cobalt);
+      margin-bottom: 1.25rem;
+    }
+
+    /* Outlined word: transparent fill + thick ink stroke.
+       -webkit-text-stroke works in every modern browser despite the prefix. */
+    .u-outline {
+      color: transparent;
+      -webkit-text-stroke: 2px var(--ink);
+    }
+    @media (min-width: 768px) {
+      .u-outline { -webkit-text-stroke: 3px var(--ink); }
+    }
+    /* Safety net: if a browser doesn't support text-stroke, the word would be
+       invisible — so give it a solid color instead. */
+    @supports not (-webkit-text-stroke: 1px black) {
+      .u-outline { color: var(--cobalt); }
+    }
+
+    /* Highlighter-mark behind key words. The gradient trick lets us size the
+       "marker stripe" (100% wide, 82% tall, nudged down) so the ascenders of
+       the letters poke out of the highlight like a real marker pen. */
+    .u-mark {
+      background-image: linear-gradient(var(--chartreuse), var(--chartreuse));
+      background-repeat: no-repeat;
+      background-size: 100% 82%;
+      background-position: 0 70%;
+      padding: 0 0.08em;
+      /* If the marked phrase wraps onto two lines, paint each line fully */
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+    }
+
+    /* ---- Buttons ----------------------------------------------------- */
+    /* Base pill shape shared by all buttons */
+    .btn {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      padding: 0.85rem 1.9rem;
+      border-radius: 999px;             /* huge radius = pill */
+      border: var(--border);
+      cursor: pointer;
+      /* Animate the hover lift + shadow smoothly */
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    /* THE primary CTA — cobalt pill. Used in nav, hero and contact so the
+       "one action" (get in touch) repeats down the whole page. */
+    .btn--primary {
+      background: var(--cobalt);
+      color: #fff;
+      border-color: var(--ink);
+    }
+
+    /* Ghost (secondary) button — transparent with ink border */
+    .btn--ghost {
+      background: transparent;
+      color: var(--ink);
+    }
+
+    /* Hard offset shadow on hover: the element lifts up-left while a solid
+       (non-blurred) shadow appears down-right. Signature of this style. */
+    .btn:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 5px 5px 0 var(--ink);
+    }
+    .btn--primary:hover { box-shadow: 5px 5px 0 var(--ink); }
+    .btn--ghost:hover   { box-shadow: 5px 5px 0 var(--cobalt); }
+
+    /* Smaller pill for the nav bar */
+    .btn--small { padding: 0.5rem 1.25rem; font-size: 0.9rem; }
+
+    /* Accessibility: "skip to content" link for keyboard users.
+       Hidden off-screen until focused with Tab. */
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -100px;                      /* parked off-screen */
+      z-index: 100;
+      background: var(--ink);
+      color: #fff;
+      padding: 0.6rem 1.2rem;
+      border-radius: 999px;
+      text-decoration: none;
+    }
+    .skip-link:focus { top: 1rem; }     /* slides into view when tabbed to */
+
+    /* =====================================================================
+       4. STICKY NAV
+       ===================================================================== */
+    .nav {
+      position: sticky;                 /* stays pinned to the top on scroll */
+      top: 0;
+      z-index: 50;                      /* floats above everything else */
+      background: var(--cream);
+      border-bottom: var(--border);
+    }
+
+    .nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-block: 0.9rem;            /* top + bottom padding */
+    }
+
+    .nav__wordmark {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      text-decoration: none;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+    }
+    /* The ® symbol, shrunk and raised like a real trademark */
+    .nav__wordmark sup { font-size: 0.55em; }
+
+    .nav__links {
+      display: none;                    /* hidden on mobile (see media query) */
+      gap: 1.75rem;
+      list-style: none;
+      padding: 0;
+    }
+
+    .nav__links a {
+      text-decoration: none;
+      color: var(--ink);
+      font-weight: 500;
+    }
+    /* Underline slides in with brand color on hover */
+    .nav__links a:hover {
+      text-decoration: underline;
+      text-decoration-color: var(--cobalt);
+      text-decoration-thickness: 3px;
+      text-underline-offset: 5px;
+    }
+
+    /* On screens ≥ 720px there's room for the middle links.
+       (Mobile-first: base styles are the phone layout, media queries add on.) */
+    @media (min-width: 720px) {
+      .nav__links { display: flex; }
+    }
+
+    /* =====================================================================
+       5. HERO
+       ===================================================================== */
+    .hero {
+      position: relative;               /* anchor for the absolute badge below */
+      padding-block: var(--space-section);
+    }
+
+    .hero__title {
+      font-size: clamp(2.7rem, 11vw, 6.75rem);   /* oversized, scales with screen */
+      margin: 0 0 1.75rem;
+      max-width: 12ch;                  /* forces the loud 3-line break */
+    }
+
+    .hero__sub {
+      max-width: 52ch;                  /* keep line length readable */
+      font-size: clamp(1.05rem, 2.5vw, 1.2rem);
+      margin-bottom: 2.25rem;
+    }
+
+    .hero__actions {
+      display: flex;
+      flex-wrap: wrap;                  /* buttons stack neatly at 380px */
+      gap: 0.9rem;
+    }
+
+    /* Rotated sticker/badge — sits in the flow on mobile,
+       floats top-right of the hero on desktop */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5ch;
+      background: var(--chartreuse);
+      border: var(--border);
+      border-radius: 999px;
+      padding: 0.6rem 1.2rem;
+      font-weight: 700;
+      transform: rotate(-3deg);
+      box-shadow: 4px 4px 0 var(--ink);
+      margin-top: 2.5rem;
+    }
+    @media (min-width: 960px) {
+      .badge {
+        position: absolute;
+        top: clamp(4rem, 10vw, 7rem);
+        right: var(--space-gutter);
+        transform: rotate(6deg);
+        margin-top: 0;
+      }
+    }
+
+    /* =====================================================================
+       6. MARQUEE
+       An infinitely-scrolling strip. How it works:
+       - .marquee hides the overflow.
+       - .marquee__track holds TWO identical copies of the text and is
+         animated from 0 to -50% of its own width.
+       - When the first copy has fully scrolled out, the track snaps back to
+         the start — but because copy #2 is identical, you can't see the seam.
+       ===================================================================== */
+    .marquee {
+      overflow: hidden;
+      background: var(--ink);
+      color: #fff;
+      border-block: var(--border);      /* top + bottom border */
+      padding-block: 0.9rem;
+    }
+
+    .marquee__track {
+      display: flex;
+      width: max-content;               /* as wide as its content, not the screen */
+      animation: marquee-scroll 28s linear infinite;
+    }
+
+    .marquee__group {
+      font-family: var(--font-display);
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      text-transform: uppercase;
+      white-space: nowrap;              /* never wrap — one long line */
+      padding-right: 0.6ch;
+    }
+
+    /* The little ✦ separators get the accent colors */
+    .marquee__group .star { color: var(--chartreuse); }
+
+    @keyframes marquee-scroll {
+      to { transform: translateX(-50%); }
+    }
+
+    /* =====================================================================
+       7. SECTION HEADER (shared by Services / Work / Process)
+       ===================================================================== */
+    .section { padding-block: var(--space-section); }
+
+    .section__title {
+      font-size: clamp(1.9rem, 6vw, 3.4rem);
+      margin-bottom: clamp(2.25rem, 6vw, 3.75rem);
+      max-width: 18ch;
+    }
+
+    /* =====================================================================
+       8. SERVICES
+       ===================================================================== */
+    .services__grid {
+      display: grid;
+      grid-template-columns: 1fr;       /* 1 column on mobile */
+      gap: 1.5rem;
+    }
+    @media (min-width: 820px) {
+      .services__grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .service-card {
+      background: var(--paper);
+      border: var(--border);
+      border-radius: var(--radius-card);
+      padding: 2rem 1.75rem;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    /* Lift + cobalt hard shadow on hover */
+    .service-card:hover {
+      transform: translate(-4px, -4px);
+      box-shadow: 8px 8px 0 var(--cobalt);
+    }
+
+    /* Big outlined index number (01 / 02 / 03) */
+    .service-card__num {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      color: transparent;
+      -webkit-text-stroke: 2px var(--cobalt);
+      display: block;
+      margin-bottom: 1rem;
+    }
+    @supports not (-webkit-text-stroke: 1px black) {
+      .service-card__num { color: var(--cobalt); }
+    }
+
+    .service-card h3 {
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      font-size: 1.2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .service-card p { font-size: 0.98rem; }
+
+    /* =====================================================================
+       9. SELECTED WORK (dark section)
+       ===================================================================== */
+    .work {
+      background: var(--ink);
+      color: var(--cream);
+    }
+
+    /* On the dark background the eyebrow switches to chartreuse for contrast */
+    .work .eyebrow { color: var(--chartreuse); }
+
+    .work__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 820px) {
+      .work__grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .work-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border: 2px solid var(--cream);
+      border-radius: var(--radius-card);
+      overflow: hidden;                  /* clips the thumb's corners */
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    /* On dark ink, the hover shadow uses chartreuse so it pops */
+    .work-card:hover {
+      transform: translate(-4px, -4px);
+      box-shadow: 8px 8px 0 var(--chartreuse);
+    }
+
+    /* Project "thumbnail" — a pure CSS gradient, no image files needed.
+       aspect-ratio keeps every thumb the same shape at any width. */
+    .work-card__thumb {
+      aspect-ratio: 4 / 3;
+      display: grid;
+      place-items: center;               /* centers the big letter */
+      border-bottom: 2px solid var(--cream);
+    }
+
+    /* Oversized ghost letter floating in each thumb — decorative only */
+    .work-card__letter {
+      font-family: var(--font-display);
+      font-size: 5.5rem;
+      color: rgba(255, 255, 255, 0.35);
+      user-select: none;
+    }
+
+    /* Each project gets its own gradient */
+    .thumb--atelier     { background: linear-gradient(135deg, #2540FF, #B39DFF); }
+    .thumb--brightsmile { background: linear-gradient(135deg, #DDF3FF, #2540FF); }
+    .thumb--open        { background: linear-gradient(135deg, #C9F24E, #7ED957); }
+    .thumb--open .work-card__letter { color: rgba(22, 19, 14, 0.3); }
+
+    .work-card__body { padding: 1.4rem 1.5rem 1.6rem; }
+
+    .work-card__body h3 {
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      font-size: 1.05rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .work-card__body p {
+      font-size: 0.92rem;
+      color: rgba(245, 242, 234, 0.75);  /* cream at 75% — softer secondary text */
+    }
+
+    /* =====================================================================
+       10. PROCESS
+       A "bordered grid" trick: the wrapper gets an ink background and a 2px
+       gap; each cell is cream. The ink showing through the gaps draws all
+       the inner borders for free — no fiddly border-collapse rules.
+       ===================================================================== */
+    .process__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2px;
+      background: var(--ink);            /* becomes the grid lines */
+      border: var(--border);
+      border-radius: var(--radius-card);
+      overflow: hidden;                  /* clips cell corners to the radius */
+    }
+    @media (min-width: 560px) {
+      .process__grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 960px) {
+      .process__grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .process-step {
+      background: var(--cream);
+      padding: 2rem 1.6rem;
+    }
+
+    .process-step__num {
+      display: inline-block;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--cobalt);
+      letter-spacing: 0.15em;
+      margin-bottom: 0.9rem;
+    }
+
+    .process-step h3 {
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      font-size: 1.15rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .process-step p { font-size: 0.95rem; }
+
+    /* =====================================================================
+       11. ABOUT
+       ===================================================================== */
+    .about__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    @media (min-width: 900px) {
+      .about__grid { grid-template-columns: 1.2fr 1fr; gap: 4rem; }
+    }
+
+    .about__intro h2 {
+      font-size: clamp(1.9rem, 5vw, 2.9rem);
+      margin-bottom: 1.5rem;
+    }
+
+    .about__intro p { max-width: 55ch; }
+    .about__intro p + p { margin-top: 1rem; }    /* space only BETWEEN paragraphs */
+
+    /* The rotated chartreuse checklist card */
+    .about__card {
+      background: var(--chartreuse);
+      border: var(--border);
+      border-radius: var(--radius-card);
+      padding: 2.25rem 2rem;
+      transform: rotate(-2deg);
+      box-shadow: 8px 8px 0 var(--ink);
+      /* Slight inward margin so the rotation + shadow never causes
+         horizontal scrolling on small screens */
+      margin-inline: 0.5rem;
+    }
+
+    .about__card h3 {
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      font-size: 1.1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .about__card ul { list-style: none; padding: 0; }
+
+    .about__card li {
+      font-weight: 500;
+      padding-left: 1.9rem;
+      position: relative;                /* anchor for the ✓ below */
+    }
+    .about__card li + li { margin-top: 0.75rem; }
+
+    /* Checkmarks drawn with a pseudo-element — no icon files needed */
+    .about__card li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      font-weight: 700;
+      color: var(--cobalt);
+    }
+
+    /* =====================================================================
+       12. CONTACT
+       ===================================================================== */
+    .contact { text-align: left; }       /* long text stays left-aligned */
+
+    .contact__title {
+      font-size: clamp(2.4rem, 9vw, 5.5rem);
+      max-width: 12ch;
+      margin-bottom: 1.75rem;
+    }
+
+    .contact__sub {
+      max-width: 48ch;
+      font-size: clamp(1.05rem, 2.5vw, 1.2rem);
+      margin-bottom: 2.25rem;
+    }
+
+    /* =====================================================================
+       13. FOOTER
+       ===================================================================== */
+    .footer {
+      background: var(--ink);
+      color: var(--cream);
+      padding-block: 2.25rem;
+    }
+
+    .footer__inner {
+      display: flex;
+      flex-direction: column;            /* stacked on mobile */
+      gap: 1rem;
+      align-items: flex-start;
+      font-size: 0.92rem;
+    }
+    @media (min-width: 720px) {
+      .footer__inner {
+        flex-direction: row;             /* side-by-side on desktop */
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    .footer__links { display: flex; gap: 1.5rem; list-style: none; padding: 0; }
+
+    .footer__links a { color: var(--cream); text-decoration: none; }
+    .footer__links a:hover {
+      text-decoration: underline;
+      text-decoration-color: var(--chartreuse);
+      text-decoration-thickness: 3px;
+      text-underline-offset: 5px;
+    }
+
+    /* =====================================================================
+       14. REDUCED MOTION
+       For users whose OS says "minimize animation" (vestibular disorders,
+       motion sickness): stop the marquee, kill the smooth scrolling and
+       remove the hover-lift transitions. The site stays 100% usable.
+       ===================================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .marquee__track { animation: none; }
+      .btn, .service-card, .work-card { transition: none; }
+      .btn:hover, .service-card:hover, .work-card:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Keyboard users can Tab to this and jump straight past the nav -->
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ===================================================================
+       1. STICKY NAV
+       =================================================================== -->
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="nav__wordmark" href="#top">SADIQ<sup>&reg;</sup></a>
+
+      <!-- These links are hidden below 720px (no room on a phone) -->
+      <nav aria-label="Main">
+        <ul class="nav__links">
+          <li><a href="#services">Services</a></li>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#process">Process</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </nav>
+
+      <!-- Primary CTA, appearance #1 -->
+      <a class="btn btn--primary btn--small" href="#contact">Let's talk</a>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- =================================================================
+         2. HERO
+         ================================================================= -->
+    <section class="hero" id="top">
+      <div class="container">
+        <p class="eyebrow">Web designer &amp; landing page specialist</p>
+
+        <!-- The headline mixes three treatments:
+             plain ink, outlined ("look loud"), highlighter ("sell quietly") -->
+        <h1 class="display hero__title">
+          Websites that
+          <span class="u-outline">look&nbsp;loud</span>
+          &amp; <span class="u-mark">sell&nbsp;quietly</span>
+        </h1>
+
+        <p class="hero__sub">
+          I design and hand-code conversion-focused landing pages, websites and
+          Shopify stores for businesses in the US, UK and Western Europe —
+          pages that turn attention into enquiries and enquiries into revenue.
+        </p>
+
+        <div class="hero__actions">
+          <!-- Primary CTA, appearance #2 -->
+          <a class="btn btn--primary" href="#contact">Start a project</a>
+          <a class="btn btn--ghost" href="#work">See the work</a>
+        </div>
+
+        <!-- Rotated sticker. aria-hidden because it's decorative flair,
+             not information a screen reader needs to announce. -->
+        <span class="badge" aria-hidden="true">Booking projects ✦</span>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         3. MARQUEE
+         The track holds two identical groups. Group #2 is aria-hidden so
+         screen readers only hear the list once.
+         ================================================================= -->
+    <div class="marquee" aria-label="Services ticker">
+      <div class="marquee__track">
+        <p class="marquee__group">
+          Landing pages <span class="star">✦</span> Web design <span class="star">✦</span>
+          Shopify themes <span class="star">✦</span> UI design <span class="star">✦</span>
+          Conversion copy <span class="star">✦</span>
+          Landing pages <span class="star">✦</span> Web design <span class="star">✦</span>
+          Shopify themes <span class="star">✦</span> UI design <span class="star">✦</span>
+          Conversion copy <span class="star">✦</span>
+        </p>
+        <p class="marquee__group" aria-hidden="true">
+          Landing pages <span class="star">✦</span> Web design <span class="star">✦</span>
+          Shopify themes <span class="star">✦</span> UI design <span class="star">✦</span>
+          Conversion copy <span class="star">✦</span>
+          Landing pages <span class="star">✦</span> Web design <span class="star">✦</span>
+          Shopify themes <span class="star">✦</span> UI design <span class="star">✦</span>
+          Conversion copy <span class="star">✦</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- =================================================================
+         4. SERVICES
+         ================================================================= -->
+    <section class="section" id="services">
+      <div class="container">
+        <p class="eyebrow">Services</p>
+        <h2 class="display section__title">Three things, <span class="u-mark">done properly</span></h2>
+
+        <div class="services__grid">
+          <article class="service-card">
+            <span class="service-card__num" aria-hidden="true">01</span>
+            <h3>Landing pages</h3>
+            <p>
+              High-converting single pages for launches, campaigns and paid
+              ads. One message, one goal, zero distractions — built to turn
+              clicks into customers.
+            </p>
+          </article>
+
+          <article class="service-card">
+            <span class="service-card__num" aria-hidden="true">02</span>
+            <h3>Website design</h3>
+            <p>
+              Full marketing sites for small businesses that want to look like
+              the market leader. Clear structure, bold identity, fast load
+              times on every device.
+            </p>
+          </article>
+
+          <article class="service-card">
+            <span class="service-card__num" aria-hidden="true">03</span>
+            <h3>Shopify design</h3>
+            <p>
+              Custom storefronts and theme redesigns that make products
+              irresistible — from homepage to checkout, styled to sell and
+              easy for you to manage.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         5. SELECTED WORK (dark section)
+         ================================================================= -->
+    <section class="section work" id="work">
+      <div class="container">
+        <p class="eyebrow">Selected work</p>
+        <h2 class="display section__title">Recent projects</h2>
+
+        <div class="work__grid">
+          <!-- Whole card is a link; href="#" is a placeholder until the
+               real case studies exist -->
+          <a class="work-card" href="#work">
+            <div class="work-card__thumb thumb--atelier">
+              <span class="work-card__letter" aria-hidden="true">A</span>
+            </div>
+            <div class="work-card__body">
+              <h3>Atelier</h3>
+              <p>Fashion Shopify theme — editorial layouts, quiet checkout.</p>
+            </div>
+          </a>
+
+          <a class="work-card" href="#work">
+            <div class="work-card__thumb thumb--brightsmile">
+              <span class="work-card__letter" aria-hidden="true">B</span>
+            </div>
+            <div class="work-card__body">
+              <h3>BrightSmile</h3>
+              <p>Dental landing page — bookings up, bounce rate down.</p>
+            </div>
+          </a>
+
+          <!-- The third slot sells the next project -->
+          <a class="work-card" href="#contact">
+            <div class="work-card__thumb thumb--open">
+              <span class="work-card__letter" aria-hidden="true">?</span>
+            </div>
+            <div class="work-card__body">
+              <h3>This could be you</h3>
+              <p>Open slot — tell me about your project and let's fill it.</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         6. PROCESS
+         ================================================================= -->
+    <section class="section" id="process">
+      <div class="container">
+        <p class="eyebrow">Process</p>
+        <h2 class="display section__title">A process with <span class="u-mark">no surprises</span></h2>
+
+        <div class="process__grid">
+          <div class="process-step">
+            <span class="process-step__num">STEP 01</span>
+            <h3>Discover</h3>
+            <p>A 30-minute call to nail your goals, audience and budget — then a fixed quote, in writing.</p>
+          </div>
+
+          <div class="process-step">
+            <span class="process-step__num">STEP 02</span>
+            <h3>Design</h3>
+            <p>You see a visual direction within days, and we refine it together until it feels exactly right.</p>
+          </div>
+
+          <div class="process-step">
+            <span class="process-step__num">STEP 03</span>
+            <h3>Build</h3>
+            <p>Hand-coded, fast and responsive — no bloated page builders, no mystery plugins.</p>
+          </div>
+
+          <div class="process-step">
+            <span class="process-step__num">STEP 04</span>
+            <h3>Launch</h3>
+            <p>Tested on real devices, live on your domain, with a walkthrough so you're never locked out.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         7. ABOUT
+         ================================================================= -->
+    <section class="section" id="about">
+      <div class="container about__grid">
+        <div class="about__intro">
+          <p class="eyebrow">About</p>
+          <h2 class="display">Bold doesn't mean busy</h2>
+          <p>
+            I'm Sadiq — a web designer who believes a site can shout for
+            attention and still sell with quiet confidence. Loud type, clear
+            message, no clutter.
+          </p>
+          <p>
+            I work remotely with founders and small teams across the US, UK
+            and Western Europe. Different time zones, same-day replies, and a
+            process that respects your time as much as your budget.
+          </p>
+        </div>
+
+        <!-- Rotated chartreuse checklist card -->
+        <div class="about__card">
+          <h3>What you can count on</h3>
+          <ul>
+            <li>Conversion-first layouts</li>
+            <li>Hand-coded — no bloated builders</li>
+            <li>Pixel-perfect on mobile</li>
+            <li>Fast turnarounds</li>
+            <li>Honest, jargon-free communication</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         8. CONTACT
+         ================================================================= -->
+    <section class="section contact" id="contact">
+      <div class="container">
+        <p class="eyebrow">Contact</p>
+        <h2 class="display contact__title">Let's make it <span class="u-mark">loud</span></h2>
+        <p class="contact__sub">
+          Tell me about your project — I reply within 24 hours with first
+          ideas and a clear quote. No pressure, no jargon.
+        </p>
+        <!-- Primary CTA, appearance #3.
+             TODO: replace hello@example.com with the real address -->
+        <a class="btn btn--primary" href="mailto:hello@example.com">hello@example.com</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================================================================
+       9. FOOTER
+       =================================================================== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p>&copy; 2026 SADIQ — designed &amp; hand-coded, no builders.</p>
+      <!-- TODO: swap href="#" for the real profile URLs -->
+      <ul class="footer__links">
+        <li><a href="#">LinkedIn</a></li>
+        <li><a href="#">GitHub</a></li>
+        <li><a href="#">Dribbble</a></li>
+      </ul>
+    </div>
+  </footer>
+
+</body>
+</html>
