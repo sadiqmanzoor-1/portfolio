@@ -86,6 +86,21 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* ---- Film-grain overlay ---------------------------------------------
+       A full-screen layer of SVG noise (feTurbulence generates static, like
+       analog film grain) at 5% opacity. pointer-events:none means it never
+       blocks a click. This makes flat colors feel printed, not "computer
+       flat" — a texture you feel more than see. */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;                        /* shorthand: top/right/bottom/left 0 */
+      z-index: 999;
+      pointer-events: none;
+      opacity: 0.05;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
     img { max-width: 100%; display: block; }
 
     ::selection { background: var(--rose); color: var(--ink); }
@@ -266,9 +281,121 @@
     .nav__cta:hover { text-decoration: underline; text-underline-offset: 4px; }
 
     /* =====================================================================
-       5. HERO — big serif statement with an italic rose accent
+       5. HERO — big serif statement over soft floating color auras
        ===================================================================== */
-    .hero { padding-block: var(--space-section); }
+    .hero {
+      position: relative;               /* anchor for auras + stamp */
+      overflow: hidden;                 /* auras never cause sideways scroll */
+      padding-block: var(--space-section);
+    }
+    /* Text sits above the auras */
+    .hero .container { position: relative; z-index: 1; }
+
+    /* ---- Floating color auras -------------------------------------------
+       Two big soft radial gradients drifting very slowly behind the text.
+       No blur filter needed — the gradient fades to transparent by itself,
+       which is much cheaper for the browser to animate. */
+    .hero__aura {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero__aura--rose {
+      width: min(560px, 80vw);
+      height: min(560px, 80vw);
+      top: -140px;
+      right: -100px;
+      background: radial-gradient(circle, rgba(224, 162, 172, 0.5), transparent 65%);
+      animation: aura-drift-1 18s ease-in-out infinite alternate;
+    }
+    .hero__aura--lilac {
+      width: min(480px, 70vw);
+      height: min(480px, 70vw);
+      bottom: -160px;
+      left: -120px;
+      background: radial-gradient(circle, rgba(201, 184, 255, 0.4), transparent 65%);
+      animation: aura-drift-2 24s ease-in-out infinite alternate;
+    }
+    @keyframes aura-drift-1 {
+      to { transform: translate(-70px, 50px) scale(1.15); }
+    }
+    @keyframes aura-drift-2 {
+      to { transform: translate(90px, -40px) scale(1.1); }
+    }
+
+    /* ---- Spinning stamp --------------------------------------------------
+       A circular "BOOKING PROJECTS · LET'S TALK" text stamp that rotates
+       slowly — an editorial signature element. It's a real link to Contact
+       and pauses (plus grows slightly) when hovered. Desktop only. */
+    .stamp {
+      display: none;
+      position: absolute;
+      z-index: 1;
+      top: clamp(5rem, 11vw, 8rem);
+      right: var(--space-gutter);
+      width: 138px;
+      height: 138px;
+      transition: transform 0.25s ease;
+    }
+    @media (min-width: 880px) {
+      .stamp { display: block; }
+    }
+    .stamp svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      animation: stamp-spin 22s linear infinite;
+    }
+    .stamp text {
+      font-family: var(--font-sans);
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 2.2px;
+      fill: var(--rose-deep);
+    }
+    .stamp .stamp__center {
+      font-family: var(--font-serif);
+      font-size: 30px;
+      letter-spacing: 0;
+      fill: var(--rose);
+    }
+    .stamp:hover { transform: scale(1.06); }
+    .stamp:hover svg { animation-play-state: paused; }
+    @keyframes stamp-spin { to { transform: rotate(360deg); } }
+
+    /* ---- Hand-drawn squiggle underline ----------------------------------
+       An SVG wave under a key word that DRAWS ITSELF like a pen stroke.
+       The trick: stroke-dasharray makes the line one long dash; animating
+       stroke-dashoffset from "fully offset" to 0 reveals it tip-to-tail. */
+    .u-squiggle { position: relative; display: inline-block; }
+    .squiggle {
+      position: absolute;
+      left: 0;
+      bottom: -0.22em;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+      pointer-events: none;
+    }
+    .squiggle path {
+      stroke-dasharray: 300;
+      stroke-dashoffset: 0;             /* visible by default (no-JS safe) */
+    }
+    /* Hero version: draws on page load, after the headline rises */
+    @media (prefers-reduced-motion: no-preference) {
+      .hero .squiggle path {
+        stroke-dashoffset: 300;
+        animation: draw 1s ease 1s forwards;
+      }
+    }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    /* Scroll-reveal version (used in Contact): hidden until the parent
+       .reveal becomes visible, then transitions in like a pen stroke */
+    .js .reveal:not(.is-visible) .squiggle path { stroke-dashoffset: 300; }
+    .js .reveal.is-visible .squiggle path {
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 1.1s ease 0.45s;
+    }
 
     .hero__title {
       font-size: clamp(2.7rem, 8vw, 5.5rem);
@@ -325,6 +452,35 @@
     }
 
     /* =====================================================================
+       5b. TICKER — a slow, elegant marquee strip in serif italic.
+       The track holds TWO identical copies of the text and slides left by
+       exactly 50% of its width; when copy one has fully left the screen
+       the loop restarts invisibly. Slow + muted = editorial, not loud.
+       ===================================================================== */
+    .ticker {
+      overflow: hidden;
+      border-block: 1px solid var(--line);   /* hairlines top + bottom */
+      padding-block: 0.8rem;
+    }
+    .ticker__track {
+      display: flex;
+      width: max-content;
+      animation: ticker-scroll 46s linear infinite;
+    }
+    .ticker__group {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--muted);
+      white-space: nowrap;
+      padding-right: 0.8ch;
+    }
+    .ticker__group .star { color: var(--rose); font-style: normal; }
+    @keyframes ticker-scroll {
+      to { transform: translateX(-50%); }
+    }
+
+    /* =====================================================================
        6. SECTION SHELL — hairline top, label left, content right
        ===================================================================== */
     .section {
@@ -358,7 +514,10 @@
       gap: 0.35rem 1rem;
       padding-block: 1.5rem;
       border-top: 1px solid var(--line);
+      transition: background 0.2s ease, padding-left 0.2s ease;
     }
+    /* Rows warm up and nudge right under the mouse — quiet tactility */
+    .service:hover { background: var(--blush); padding-left: 0.75rem; }
     .service:last-child { border-bottom: 1px solid var(--line); }
     @media (min-width: 720px) {
       /* Wide screens: description gets its own right-hand column */
@@ -420,12 +579,32 @@
     /* Project "covers" are pure CSS gradients — no image files. The
        gradient is double-sized and drifts slowly, so covers feel alive. */
     .work-card__thumb {
+      position: relative;               /* anchor for the corner chip */
       aspect-ratio: 4 / 3;
       display: grid;
       place-items: center;
       background-size: 180% 180%;
       animation: drift 12s ease-in-out infinite alternate;
     }
+
+    /* Corner chip: a small white circle with ↗ that floats in on hover */
+    .work-card__go {
+      position: absolute;
+      top: 0.9rem;
+      right: 0.9rem;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--rose-deep);
+      display: grid;
+      place-items: center;
+      font-size: 1.05rem;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .work-card:hover .work-card__go { opacity: 1; transform: none; }
     @keyframes drift {
       from { background-position: 0% 0%; }
       to   { background-position: 100% 100%; }
@@ -441,7 +620,10 @@
       font-size: 5rem;
       color: rgba(255, 255, 255, 0.65);
       user-select: none;
+      transition: transform 0.35s ease;
     }
+    /* The initial leans playfully when the card is hovered */
+    .work-card:hover .work-card__letter { transform: scale(1.12) rotate(-5deg); }
     .thumb--open .work-card__letter { color: rgba(166, 77, 92, 0.55); }
 
     .work-card__body {
@@ -611,10 +793,13 @@
        ===================================================================== */
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      .nav__cta::before, .work-card__thumb { animation: none; }
-      .work-card { transition: none; }
+      .nav__cta::before, .work-card__thumb, .hero__aura,
+      .ticker__track, .stamp svg { animation: none; }
+      .work-card, .work-card__letter, .service { transition: none; }
       .work-card:hover { transform: none; }
+      .work-card:hover .work-card__letter { transform: none; }
       .js .reveal { opacity: 1; transform: none; transition: none; }
+      .squiggle path { stroke-dashoffset: 0 !important; transition: none !important; }
     }
   </style>
 </head>
@@ -648,12 +833,28 @@
          HERO — label, serif statement, actions, meta line
          ================================================================= -->
     <section class="hero" id="top">
+      <!-- Soft color auras drifting behind the text (decorative) -->
+      <span class="hero__aura hero__aura--rose" aria-hidden="true"></span>
+      <span class="hero__aura hero__aura--lilac" aria-hidden="true"></span>
+
+      <!-- Spinning circular text stamp — links to Contact (desktop only) -->
+      <a class="stamp" href="#contact" aria-label="Booking projects — let's talk">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <defs>
+            <!-- An invisible circle for the text to run along -->
+            <path id="stamp-circle" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/>
+          </defs>
+          <text><textPath href="#stamp-circle" textLength="274" lengthAdjust="spacingAndGlyphs">BOOKING PROJECTS ✦ LET'S TALK ✦</textPath></text>
+          <text class="stamp__center" x="60" y="70" text-anchor="middle">✳</text>
+        </svg>
+      </a>
+
       <div class="container">
         <p class="label rise">Multi-disciplinary designer &amp; writer</p>
 
         <h1 class="title hero__title rise">
           Design that speaks softly —
-          and <em>sells</em><span class="spark" aria-hidden="true">*</span>
+          and <em class="u-squiggle">sells<svg class="squiggle" viewBox="0 0 130 14" aria-hidden="true"><path d="M3 10 C 20 2, 34 12, 52 8 S 86 3, 100 9 S 122 10, 127 7" fill="none" stroke="#E0A2AC" stroke-width="3.5" stroke-linecap="round"/></svg></em><span class="spark" aria-hidden="true">*</span>
         </h1>
 
         <p class="hero__sub rise">
@@ -676,6 +877,31 @@
     </section>
 
     <!-- =================================================================
+         TICKER — slow italic strip of the services. Decorative repetition
+         (the real list is below), so it's hidden from screen readers.
+         ================================================================= -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__track">
+        <p class="ticker__group">
+          Landing pages <span class="star">✦</span> Web design <span class="star">✦</span>
+          Shopify <span class="star">✦</span> Graphic design <span class="star">✦</span>
+          Content writing <span class="star">✦</span> Brand identity <span class="star">✦</span>
+          Landing pages <span class="star">✦</span> Web design <span class="star">✦</span>
+          Shopify <span class="star">✦</span> Graphic design <span class="star">✦</span>
+          Content writing <span class="star">✦</span> Brand identity <span class="star">✦</span>
+        </p>
+        <p class="ticker__group">
+          Landing pages <span class="star">✦</span> Web design <span class="star">✦</span>
+          Shopify <span class="star">✦</span> Graphic design <span class="star">✦</span>
+          Content writing <span class="star">✦</span> Brand identity <span class="star">✦</span>
+          Landing pages <span class="star">✦</span> Web design <span class="star">✦</span>
+          Shopify <span class="star">✦</span> Graphic design <span class="star">✦</span>
+          Content writing <span class="star">✦</span> Brand identity <span class="star">✦</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- =================================================================
          SERVICES — label left, numbered serif list right
          ================================================================= -->
     <section class="section" id="services">
@@ -687,33 +913,34 @@
             Everything a small brand needs — <em>under one roof</em>.
           </h2>
 
-          <div class="reveal" style="--d: 0.05s">
-            <div class="service">
+          <!-- Each row reveals with its own small delay — a cascade -->
+          <div>
+            <div class="service reveal">
               <span class="service__num">01</span>
               <h3 class="service__name">Landing pages</h3>
               <p class="service__desc">One page, one goal — launch and campaign pages built to turn clicks into customers.</p>
             </div>
-            <div class="service">
+            <div class="service reveal" style="--d: 0.06s">
               <span class="service__num">02</span>
               <h3 class="service__name">Website design</h3>
               <p class="service__desc">Full marketing sites that make small businesses look like the market leader.</p>
             </div>
-            <div class="service">
+            <div class="service reveal" style="--d: 0.12s">
               <span class="service__num">03</span>
               <h3 class="service__name">Shopify design</h3>
               <p class="service__desc">Storefronts styled to sell — from homepage to checkout, easy for you to run.</p>
             </div>
-            <div class="service">
+            <div class="service reveal" style="--d: 0.18s">
               <span class="service__num">04</span>
               <h3 class="service__name">Graphic design</h3>
               <p class="service__desc">Logos, social kits, decks and ad creatives that keep every touchpoint on-brand.</p>
             </div>
-            <div class="service">
+            <div class="service reveal" style="--d: 0.24s">
               <span class="service__num">05</span>
               <h3 class="service__name">Content writing</h3>
               <p class="service__desc">Headlines, landing copy and product stories — the words that do the quiet selling.</p>
             </div>
-            <div class="service">
+            <div class="service reveal" style="--d: 0.3s">
               <span class="service__num">06</span>
               <h3 class="service__name">Brand identity</h3>
               <p class="service__desc">Colors, type and voice in one tidy kit — so everything you publish matches.</p>
@@ -737,6 +964,7 @@
             <a class="work-card reveal" href="#work">
               <div class="work-card__thumb thumb--atelier">
                 <span class="work-card__letter" aria-hidden="true">A</span>
+                <span class="work-card__go" aria-hidden="true">↗</span>
               </div>
               <div class="work-card__body">
                 <h3>Atelier</h3>
@@ -747,6 +975,7 @@
             <a class="work-card reveal" href="#work" style="--d: 0.07s">
               <div class="work-card__thumb thumb--brightsmile">
                 <span class="work-card__letter" aria-hidden="true">B</span>
+                <span class="work-card__go" aria-hidden="true">↗</span>
               </div>
               <div class="work-card__body">
                 <h3>BrightSmile</h3>
@@ -758,6 +987,7 @@
             <a class="work-card reveal" href="#contact" style="--d: 0.14s">
               <div class="work-card__thumb thumb--open">
                 <span class="work-card__letter" aria-hidden="true">?</span>
+                <span class="work-card__go" aria-hidden="true">↗</span>
               </div>
               <div class="work-card__body">
                 <h3>Your project</h3>
@@ -852,7 +1082,7 @@
         <p class="label reveal">Contact</p>
 
         <div>
-          <h2 class="title contact__title reveal">Have a project in mind? <em>Let's talk.</em></h2>
+          <h2 class="title contact__title reveal">Have a project in mind? <em class="u-squiggle">Let's talk.<svg class="squiggle" viewBox="0 0 130 14" aria-hidden="true"><path d="M3 10 C 20 2, 34 12, 52 8 S 86 3, 100 9 S 122 10, 127 7" fill="none" stroke="#E0A2AC" stroke-width="3.5" stroke-linecap="round"/></svg></em></h2>
           <p class="contact__sub reveal">
             Tell me about it — I reply within 24 hours with first ideas and
             a clear quote. No pressure, no jargon.
