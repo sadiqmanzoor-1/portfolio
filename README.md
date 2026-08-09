@@ -3,8 +3,11 @@
 A one-page portfolio site for a multi-disciplinary designer & writer —
 landing pages, web design, Shopify, graphic design and content writing.
 Built as a single `index.html` — all CSS and a small vanilla-JS enhancement
-script (scroll reveal + custom cursor) live inside the file. No frameworks,
-no build tools. The site works fully even with JavaScript disabled.
+script (scroll reveal) live inside the file. No frameworks, no build tools.
+The site works fully even with JavaScript disabled.
+
+Theme: "Rose & Porcelain" — white canvas, near-black ink, dusty-rose pink
+(`#E0A2AC`) as the single accent. All colors are CSS variables in `:root`.
 
 ## Preview locally
 

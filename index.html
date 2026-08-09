@@ -7,15 +7,18 @@
   <meta name="description" content="SADIQ — multi-disciplinary designer & writer. Landing pages, websites, Shopify stores, graphic design and conversion copy for businesses in the US, UK and Western Europe.">
   <title>SADIQ® — Designer & writer for brands that want to be loud</title>
 
+  <!-- Colors the browser UI (mobile address bar) to match the site -->
+  <meta name="theme-color" content="#FFFFFF">
+
   <!-- Social-share preview (Open Graph) — what appears when the link is
        pasted into WhatsApp / LinkedIn / Slack etc. -->
   <meta property="og:title" content="SADIQ® — Brands that look loud & sell quietly">
   <meta property="og:description" content="Landing pages, web design, Shopify, graphic design & conversion copy — under one roof.">
   <meta property="og:type" content="website">
 
-  <!-- Tiny inline favicon (a chartreuse square with an S) — an SVG encoded
+  <!-- Tiny inline favicon (rose square with a dark S) — an SVG encoded
        as a data URI, so no extra image file is needed. -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23C9F24E'/%3E%3Ctext x='8' y='12' font-size='11' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='%2316130E'%3ES%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23E0A2AC'/%3E%3Ctext x='8' y='12' font-size='11' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='%2316121A'%3ES%3C/text%3E%3C/svg%3E">
 
   <!-- Google Fonts: Archivo Black (display) + Space Grotesk (body).
        preconnect opens the connection early so fonts arrive faster.
@@ -26,16 +29,21 @@
 
   <style>
     /* =====================================================================
-       1. DESIGN TOKENS
-       Every color, font and spacing value lives here as a CSS variable.
-       Change it once — it updates across the whole site.
+       1. DESIGN TOKENS — theme: "ROSE & PORCELAIN"
+       White canvas, near-black ink for reading, dusty-rose pink for
+       personality. The pink does the charm, the ink does the work —
+       pink is never used for small body text (too little contrast).
+       Every color, font and spacing value lives here as a CSS variable —
+       change it once, it updates across the whole site.
        ===================================================================== */
     :root {
-      --cream:      #F5F2EA;   /* canvas / page background            */
-      --ink:        #16130E;   /* near-black text & borders           */
-      --cobalt:     #2540FF;   /* electric accent (CTA, shadows)      */
-      --chartreuse: #C9F24E;   /* acid highlight (marker, stickers)   */
-      --paper:      #FDFBF4;   /* slightly-lighter card surface       */
+      --bg:      #FFFFFF;   /* page canvas — clean white                    */
+      --fg:      #16121A;   /* text & borders — soft near-black ink         */
+      --accent:  #E0A2AC;   /* THE color — dusty rose pink (marks, strips)  */
+      --accent-deep: #A64D5C; /* deeper rose for SMALL text on white        */
+      --lilac:   #C9B8FF;   /* gradient support color                       */
+      --surface: #FAF0F2;   /* blush surface (process cells)                */
+      --muted:   rgba(22, 18, 26, 0.68);     /* secondary text on white     */
 
       --font-display: "Archivo Black", Impact, sans-serif;
       --font-body:    "Space Grotesk", "Segoe UI", Arial, sans-serif;
@@ -44,7 +52,7 @@
          on phones, generous on desktop, no media queries needed */
       --space-section: clamp(4.5rem, 12vw, 9.5rem);
       --space-gutter:  clamp(1.25rem, 5vw, 3rem);
-      --border: 2px solid var(--ink);
+      --border: 2px solid var(--fg);
       --radius-card: 14px;
     }
 
@@ -64,8 +72,8 @@
     }
 
     body {
-      background: var(--cream);
-      color: var(--ink);
+      background: var(--bg);
+      color: var(--fg);
       font-family: var(--font-body);
       font-size: 1.0625rem;
       line-height: 1.6;
@@ -73,13 +81,29 @@
       overflow-x: hidden;              /* rotated stickers never cause sideways scroll */
     }
 
+    /* ---- Film-grain overlay ---------------------------------------------
+       A full-screen layer of SVG noise (feTurbulence generates static, like
+       analog film grain) at 6% opacity. It sits on top of everything but
+       pointer-events:none means it never blocks a click. This one detail
+       makes flat colors feel printed instead of "computer flat". */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;                        /* shorthand: top/right/bottom/left 0 */
+      z-index: 999;
+      pointer-events: none;
+      opacity: 0.06;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
     img { max-width: 100%; display: block; }
 
-    ::selection { background: var(--cobalt); color: #fff; }
+    ::selection { background: var(--accent); color: var(--fg); }
 
-    /* Keyboard-focus ring (only for keyboard users, not mouse clicks) */
+    /* Keyboard-focus ring (only for keyboard users, not mouse clicks).
+       Deep rose — pale pink would be invisible against white. */
     :focus-visible {
-      outline: 3px solid var(--cobalt);
+      outline: 3px solid var(--accent-deep);
       outline-offset: 3px;
       border-radius: 4px;
     }
@@ -102,35 +126,36 @@
       letter-spacing: -0.01em;
     }
 
-    /* Small numbered label above each section — "(01) — Services" style.
-       The number gives the page an editorial, indexed feel. */
+    /* Small numbered label above each section — "(01) — Services" style */
     .eyebrow {
       display: inline-block;
       font-weight: 700;
       font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.18em;
-      color: var(--cobalt);
+      color: var(--accent-deep);   /* deep rose — pale pink fails on white */
       margin-bottom: 1.25rem;
     }
 
     /* Outlined word: transparent fill + thick ink stroke */
     .u-outline {
       color: transparent;
-      -webkit-text-stroke: 2px var(--ink);
+      -webkit-text-stroke: 2px var(--fg);
     }
     @media (min-width: 768px) {
-      .u-outline { -webkit-text-stroke: 3px var(--ink); }
+      .u-outline { -webkit-text-stroke: 3px var(--fg); }
     }
     /* If a browser can't do text-stroke, the word must not be invisible */
     @supports not (-webkit-text-stroke: 1px black) {
-      .u-outline { color: var(--cobalt); }
+      .u-outline { color: var(--accent-deep); }
     }
 
-    /* Highlighter-mark: a gradient "stripe" sized to 82% of the line height,
-       nudged down so ascenders poke out — like a real marker pen */
+    /* Highlighter-mark: a rose "stripe" sized to 82% of the line height,
+       nudged down so ascenders poke out — like a real marker pen.
+       Ink text on the pink stripe = strong contrast. */
     .u-mark {
-      background-image: linear-gradient(var(--chartreuse), var(--chartreuse));
+      color: var(--fg);
+      background-image: linear-gradient(var(--accent), var(--accent));
       background-repeat: no-repeat;
       background-size: 100% 82%;
       background-position: 0 70%;
@@ -152,10 +177,11 @@
       cursor: pointer;
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
-    .btn--primary { background: var(--cobalt); color: #fff; }
-    .btn--ghost   { background: transparent;  color: var(--ink); }
-    .btn:hover          { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--ink); }
-    .btn--ghost:hover   { box-shadow: 5px 5px 0 var(--cobalt); }
+    /* Primary = rose pill with INK text (white-on-pink would be unreadable) */
+    .btn--primary { background: var(--accent); color: var(--fg); }
+    .btn--ghost   { background: transparent;  color: var(--fg); }
+    .btn:hover        { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--fg); }
+    .btn--ghost:hover { box-shadow: 5px 5px 0 var(--accent); }
     .btn--small { padding: 0.5rem 1.25rem; font-size: 0.9rem; }
 
     /* "Skip to content" for keyboard users — parked off-screen until Tab */
@@ -163,9 +189,10 @@
       position: absolute;
       left: 1rem;
       top: -100px;
-      z-index: 100;
-      background: var(--ink);
-      color: #fff;
+      z-index: 1000;
+      background: var(--accent);
+      color: var(--fg);
+      font-weight: 700;
       padding: 0.6rem 1.2rem;
       border-radius: 999px;
       text-decoration: none;
@@ -175,9 +202,9 @@
     /* ---- Scroll-reveal ---------------------------------------------------
        Elements with .reveal start invisible and rise into place when they
        scroll into view (the JS at the bottom adds .is-visible).
-       IMPORTANT: the hidden state only applies when <html> has the .js class
-       — which the script adds. No JavaScript? Everything is simply visible.
-       Each element can stagger via a --d (delay) custom property. */
+       The hidden state only applies when <html> has the .js class — which
+       the script adds. No JavaScript? Everything is simply visible.
+       Elements can stagger via a --d (delay) custom property. */
     .js .reveal {
       opacity: 0;
       transform: translateY(26px);
@@ -190,41 +217,13 @@
     }
 
     /* =====================================================================
-       4. CUSTOM CURSOR RING (desktop only)
-       A cobalt ring that trails the mouse and grows over links — a small
-       "this site was made by someone who cares" signal. The real cursor
-       stays visible, so usability is never hurt. JS enables it only on
-       precise pointers (mouse, not touch) and only if motion is allowed.
-       ===================================================================== */
-    .cursor {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 34px;
-      height: 34px;
-      border: 2px solid var(--cobalt);
-      border-radius: 50%;
-      pointer-events: none;            /* never blocks clicks */
-      z-index: 999;
-      transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease;
-    }
-    body.has-cursor .cursor { display: block; }
-    /* Grows + tints when hovering anything clickable */
-    .cursor.is-active {
-      width: 54px;
-      height: 54px;
-      background: rgba(37, 64, 255, 0.12);
-    }
-
-    /* =====================================================================
-       5. STICKY NAV
+       4. STICKY NAV
        ===================================================================== */
     .nav {
       position: sticky;
       top: 0;
       z-index: 50;
-      background: var(--cream);
+      background: var(--bg);
       border-bottom: var(--border);
     }
     .nav__inner {
@@ -238,7 +237,7 @@
       font-family: var(--font-display);
       font-size: 1.35rem;
       text-decoration: none;
-      color: var(--ink);
+      color: var(--fg);
     }
     .nav__wordmark sup { font-size: 0.55em; }
 
@@ -248,10 +247,10 @@
       list-style: none;
       padding: 0;
     }
-    .nav__links a { text-decoration: none; color: var(--ink); font-weight: 500; }
+    .nav__links a { text-decoration: none; color: var(--fg); font-weight: 500; }
     .nav__links a:hover {
       text-decoration: underline;
-      text-decoration-color: var(--cobalt);
+      text-decoration-color: var(--accent);
       text-decoration-thickness: 3px;
       text-underline-offset: 5px;
     }
@@ -260,10 +259,10 @@
     }
 
     /* =====================================================================
-       6. HERO
+       5. HERO
        ===================================================================== */
     .hero {
-      position: relative;               /* anchor for the absolute badge */
+      position: relative;               /* anchor for the badge + spinning star */
       padding-block: var(--space-section);
     }
     .hero__title {
@@ -271,27 +270,34 @@
       max-width: 11ch;
       margin-bottom: 1.75rem;
     }
+    /* The marked phrase gets a tiny tilt — like a sticker slapped on */
+    .hero__title .u-mark {
+      display: inline-block;
+      transform: rotate(-2deg);
+    }
     .hero__sub {
       max-width: 54ch;
       font-size: clamp(1.05rem, 2.5vw, 1.2rem);
       margin-bottom: 2.25rem;
+      color: var(--muted);
     }
     .hero__actions { display: flex; flex-wrap: wrap; gap: 0.9rem; }
 
     /* Rotated sticker — in the text flow on mobile, floating top-right
-       on desktop. Wrapped in .badge-wrap so the scroll-reveal transform
-       never fights the sticker's own rotation. */
+       on desktop. Wrapped in .badge-wrap so entrance animations never
+       fight the sticker's own rotation. */
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 0.5ch;
-      background: var(--chartreuse);
+      background: var(--accent);
+      color: var(--fg);
       border: var(--border);
       border-radius: 999px;
       padding: 0.6rem 1.2rem;
       font-weight: 700;
       transform: rotate(-3deg);
-      box-shadow: 4px 4px 0 var(--ink);
+      box-shadow: 4px 4px 0 var(--fg);
     }
     .badge-wrap { display: inline-block; margin-top: 2.5rem; }
     @media (min-width: 960px) {
@@ -304,9 +310,22 @@
       .badge { transform: rotate(6deg); }
     }
 
-    /* Hero entrance: each line fades up in sequence when the page loads.
-       Wrapped in the motion-safe media query so users who asked their OS
-       for less motion never see it. */
+    /* A big outlined ✦ that slowly spins in the hero's corner — pure
+       decoration, pure attitude. Hidden from screen readers. */
+    .hero__star {
+      position: absolute;
+      bottom: clamp(1rem, 4vw, 3rem);
+      right: var(--space-gutter);
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      line-height: 1;
+      color: var(--accent);
+      user-select: none;
+      animation: spin 14s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Hero entrance: each line fades up in sequence on page load. Wrapped
+       in the motion-safe query so reduced-motion users never see it. */
     @media (prefers-reduced-motion: no-preference) {
       .hero .rise {
         opacity: 0;
@@ -324,17 +343,17 @@
     @keyframes fade-in { to { opacity: 1; } }
 
     /* =====================================================================
-       7. MARQUEES
+       6. MARQUEES
        Infinite scrolling strips. The track holds TWO identical copies of
        the text and slides left by exactly 50% of its own width — when copy
        one has fully left the screen, the loop restarts invisibly.
-       Strip #1 (services): ink background, after the hero.
-       Strip #2 (let's talk): chartreuse, runs the OTHER way, before contact.
+       Strip #1 (services): solid ROSE — the softest loud thing on the page.
+       Strip #2 (let's talk): ink, runs the OTHER way, before contact.
        ===================================================================== */
     .marquee {
       overflow: hidden;
-      background: var(--ink);
-      color: #fff;
+      background: var(--accent);
+      color: var(--fg);
       border-block: var(--border);
       padding-block: 0.9rem;
     }
@@ -350,19 +369,19 @@
       white-space: nowrap;
       padding-right: 0.6ch;
     }
-    .marquee__group .star { color: var(--chartreuse); }
+    .marquee__group .star { color: var(--bg); }
 
-    /* The chartreuse variant reverses direction for visual rhythm */
-    .marquee--talk { background: var(--chartreuse); color: var(--ink); }
+    /* Ink variant, reversed direction, for rhythm */
+    .marquee--talk { background: var(--fg); color: var(--bg); }
     .marquee--talk .marquee__track { animation-direction: reverse; }
-    .marquee--talk .star { color: var(--cobalt); }
+    .marquee--talk .star { color: var(--accent); }
 
     @keyframes marquee-scroll {
       to { transform: translateX(-50%); }
     }
 
     /* =====================================================================
-       8. SECTION SHELL (shared)
+       7. SECTION SHELL (shared)
        ===================================================================== */
     .section { padding-block: var(--space-section); }
     .section__title {
@@ -372,10 +391,10 @@
     }
 
     /* =====================================================================
-       9. SERVICES — a numbered index list.
-       Instead of cards, each service is a full-width row (like a table of
-       contents). Hovering a row inverts it to ink with a chartreuse arrow —
-       a bigger, bolder interaction than a card lift.
+       8. SERVICES — a numbered index list.
+       Each service is a full-width row (like a table of contents). Hovering
+       a row inverts it to BONE with dark text and an orange arrow — the
+       exact negative of the page.
        ===================================================================== */
     .services__list {
       list-style: none;
@@ -396,7 +415,7 @@
     .service-row__num {
       font-weight: 700;
       font-size: 0.85rem;
-      color: var(--cobalt);
+      color: var(--accent-deep);
       letter-spacing: 0.1em;
     }
     .service-row__name {
@@ -409,7 +428,7 @@
       grid-column: 2;                   /* sits under the name, aligned with it */
       font-size: 0.95rem;
       max-width: 46ch;
-      color: rgba(22, 19, 14, 0.75);
+      color: var(--muted);
     }
     .service-row__arrow {
       grid-row: 1 / span 2;
@@ -420,25 +439,28 @@
       transform: translateX(-10px);
       transition: opacity 0.18s ease, transform 0.18s ease;
     }
-    /* The invert-on-hover moment */
+    /* The invert-on-hover moment: the row flips to ink, pink pops on it */
     .service-row:hover {
-      background: var(--ink);
-      color: var(--cream);
+      background: var(--fg);
+      color: var(--bg);
       padding-left: 1.5rem;             /* the row nudges right — feels alive */
     }
-    .service-row:hover .service-row__num  { color: var(--chartreuse); }
-    .service-row:hover .service-row__desc { color: rgba(245, 242, 234, 0.75); }
+    .service-row:hover .service-row__num  { color: var(--accent); }
+    .service-row:hover .service-row__desc { color: rgba(255, 255, 255, 0.75); }
     .service-row:hover .service-row__arrow {
       opacity: 1;
       transform: none;
-      color: var(--chartreuse);
+      color: var(--accent);
     }
 
     /* =====================================================================
-       10. SELECTED WORK (dark section)
+       9. SELECTED WORK — the INVERTED section.
+       The whole page is white, so the work section flips to ink. The flip
+       itself is the design move: your work literally sits in the spotlight.
        ===================================================================== */
-    .work { background: var(--ink); color: var(--cream); }
-    .work .eyebrow { color: var(--chartreuse); }
+    .work { background: var(--fg); color: var(--bg); }
+    /* On ink, the pale rose reads perfectly — swap back from the deep one */
+    .work .eyebrow { color: var(--accent); }
 
     .work__grid {
       display: grid;
@@ -453,24 +475,24 @@
       display: block;
       text-decoration: none;
       color: inherit;
-      border: 2px solid var(--cream);
+      border: 2px solid var(--bg);
       border-radius: var(--radius-card);
       overflow: hidden;
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
     .work-card:hover {
       transform: translate(-4px, -4px);
-      box-shadow: 8px 8px 0 var(--chartreuse);
+      box-shadow: 8px 8px 0 var(--accent);
     }
 
     /* Project "thumbnails" are pure CSS gradients — no image files.
-       The gradient is double-sized and slowly pans back and forth, so the
-       thumbs feel alive (like the animated covers on the reference site). */
+       The gradient is double-sized and slowly pans back and forth so the
+       thumbs feel alive. */
     .work-card__thumb {
       aspect-ratio: 4 / 3;
       display: grid;
       place-items: center;
-      border-bottom: 2px solid var(--cream);
+      border-bottom: 2px solid var(--bg);
       background-size: 200% 200%;
       animation: thumb-pan 9s ease-in-out infinite alternate;
     }
@@ -483,20 +505,20 @@
     .work-card__letter {
       font-family: var(--font-display);
       font-size: 5.5rem;
-      color: rgba(255, 255, 255, 0.35);
+      color: rgba(255, 255, 255, 0.4);
       user-select: none;
     }
-    .thumb--atelier     { background-image: linear-gradient(135deg, #2540FF, #B39DFF); }
-    .thumb--brightsmile { background-image: linear-gradient(135deg, #DDF3FF, #2540FF); }
-    .thumb--open        { background-image: linear-gradient(135deg, #C9F24E, #7ED957); }
-    .thumb--open .work-card__letter { color: rgba(22, 19, 14, 0.3); }
+    .thumb--atelier     { background-image: linear-gradient(135deg, #E0A2AC, #C9B8FF); }
+    .thumb--brightsmile { background-image: linear-gradient(135deg, #2A2130, #A64D5C); }
+    .thumb--open        { background-image: linear-gradient(135deg, #FAF0F2, #E0A2AC); }
+    .thumb--open .work-card__letter { color: rgba(22, 18, 26, 0.3); }
 
     .work-card__body { padding: 1.4rem 1.5rem 1.6rem; }
     .work-card__index {
       font-weight: 700;
       font-size: 0.78rem;
       letter-spacing: 0.12em;
-      color: var(--chartreuse);
+      color: var(--accent);
     }
     .work-card__body h3 {
       font-family: var(--font-display);
@@ -506,7 +528,7 @@
     }
     .work-card__body p {
       font-size: 0.92rem;
-      color: rgba(245, 242, 234, 0.75);
+      color: rgba(255, 255, 255, 0.75);
       margin-bottom: 0.9rem;
     }
 
@@ -517,21 +539,22 @@
       font-weight: 500;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      border: 1px solid rgba(245, 242, 234, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.5);
       border-radius: 999px;
       padding: 0.15rem 0.6rem;
     }
 
     /* =====================================================================
-       11. PROCESS
-       Bordered-grid trick: the wrapper's ink background shows through a
-       2px grid gap, drawing all inner borders for free.
+       10. PROCESS
+       Bordered-grid trick: the wrapper's INK background shows through a
+       2px grid gap, drawing all inner borders for free. Cells sit on a
+       soft blush surface so the grid feels warm, not clinical.
        ===================================================================== */
     .process__grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 2px;
-      background: var(--ink);
+      background: var(--fg);
       border: var(--border);
       border-radius: var(--radius-card);
       overflow: hidden;
@@ -539,12 +562,12 @@
     @media (min-width: 560px) { .process__grid { grid-template-columns: repeat(2, 1fr); } }
     @media (min-width: 960px) { .process__grid { grid-template-columns: repeat(4, 1fr); } }
 
-    .process-step { background: var(--cream); padding: 2rem 1.6rem; }
+    .process-step { background: var(--surface); padding: 2rem 1.6rem; }
     .process-step__num {
       display: inline-block;
       font-weight: 700;
       font-size: 0.8rem;
-      color: var(--cobalt);
+      color: var(--accent-deep);
       letter-spacing: 0.15em;
       margin-bottom: 0.9rem;
     }
@@ -554,10 +577,10 @@
       font-size: 1.15rem;
       margin-bottom: 0.6rem;
     }
-    .process-step p { font-size: 0.95rem; }
+    .process-step p { font-size: 0.95rem; color: var(--muted); }
 
     /* =====================================================================
-       12. ABOUT
+       11. ABOUT
        ===================================================================== */
     .about__grid {
       display: grid;
@@ -572,18 +595,20 @@
       font-size: clamp(1.9rem, 5vw, 2.9rem);
       margin-bottom: 1.5rem;
     }
-    .about__intro p { max-width: 55ch; }
+    .about__intro p { max-width: 55ch; color: var(--muted); }
     .about__intro p + p { margin-top: 1rem; }
 
-    /* Rotated chartreuse checklist card. The rotation lives on the card,
-       the scroll-reveal lives on its wrapper — they never conflict. */
+    /* Rotated ROSE checklist card — the warmest object on the page.
+       The rotation lives on the card, the scroll-reveal on its wrapper —
+       they never conflict. */
     .about__card {
-      background: var(--chartreuse);
+      background: var(--accent);
+      color: var(--fg);
       border: var(--border);
       border-radius: var(--radius-card);
       padding: 2.25rem 2rem;
       transform: rotate(-2deg);
-      box-shadow: 8px 8px 0 var(--ink);
+      box-shadow: 8px 8px 0 var(--fg);
       margin-inline: 0.5rem;            /* rotation never causes sideways scroll */
     }
     .about__card h3 {
@@ -604,13 +629,13 @@
       position: absolute;
       left: 0;
       font-weight: 700;
-      color: var(--cobalt);
+      color: var(--accent-deep);
     }
 
     /* =====================================================================
-       13. CONTACT
-       The email itself is the hero here — a giant display-type link with a
-       thick underline that turns chartreuse on hover.
+       12. CONTACT
+       The email itself is the hero — giant display type with a thick
+       underline that flips orange on hover.
        ===================================================================== */
     .contact__title {
       font-size: clamp(2.4rem, 9vw, 5.75rem);
@@ -621,12 +646,13 @@
       max-width: 48ch;
       font-size: clamp(1.05rem, 2.5vw, 1.2rem);
       margin-bottom: 2.5rem;
+      color: var(--muted);
     }
     .contact__email {
       display: inline-block;
       font-family: var(--font-display);
       font-size: clamp(1.05rem, 4.2vw, 2.6rem);
-      color: var(--ink);
+      color: var(--fg);
       text-decoration: underline;
       text-decoration-thickness: 0.14em;
       text-underline-offset: 0.18em;
@@ -634,15 +660,16 @@
       overflow-wrap: anywhere;          /* long address never overflows a phone */
       transition: text-decoration-color 0.15s ease;
     }
-    .contact__email:hover { text-decoration-color: var(--chartreuse); }
-    .contact__note { margin-top: 1.5rem; font-size: 0.95rem; color: rgba(22, 19, 14, 0.7); }
+    .contact__email:hover { text-decoration-color: var(--accent); }
+    .contact__note { margin-top: 1.5rem; font-size: 0.95rem; color: var(--muted); }
 
     /* =====================================================================
-       14. FOOTER
+       13. FOOTER — solid rose endcap
        ===================================================================== */
     .footer {
-      background: var(--ink);
-      color: var(--cream);
+      background: var(--accent);
+      color: var(--fg);
+      border-top: var(--border);
       padding-block: 2.25rem;
     }
     .footer__inner {
@@ -651,6 +678,7 @@
       gap: 1rem;
       align-items: flex-start;
       font-size: 0.92rem;
+      font-weight: 500;
     }
     @media (min-width: 720px) {
       .footer__inner {
@@ -659,24 +687,23 @@
         align-items: center;
       }
     }
-    .footer__links { display: flex; gap: 1.5rem; list-style: none; padding: 0; }
-    .footer__links a { color: var(--cream); text-decoration: none; }
+    .footer__links { display: flex; flex-wrap: wrap; gap: 1.5rem; list-style: none; padding: 0; }
+    .footer__links a { color: var(--fg); text-decoration: none; }
     .footer__links a:hover {
       text-decoration: underline;
-      text-decoration-color: var(--chartreuse);
       text-decoration-thickness: 3px;
       text-underline-offset: 5px;
     }
 
     /* =====================================================================
-       15. REDUCED MOTION
-       For users whose OS asks for less animation: stop the marquees and
-       gradient pans, kill smooth scroll, reveal everything instantly and
-       remove hover-lifts. The site stays 100% usable.
+       14. REDUCED MOTION
+       For users whose OS asks for less animation: stop the marquees,
+       gradient pans and the spinning star, kill smooth scroll, reveal
+       everything instantly and remove hover-lifts. Fully usable, just calm.
        ===================================================================== */
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      .marquee__track, .work-card__thumb { animation: none; }
+      .marquee__track, .work-card__thumb, .hero__star { animation: none; }
       .btn, .work-card, .service-row { transition: none; }
       .btn:hover, .work-card:hover { transform: none; }
       .js .reveal { opacity: 1; transform: none; transition: none; }
@@ -684,10 +711,6 @@
   </style>
 </head>
 <body>
-
-  <!-- Custom cursor ring — enabled by the script at the bottom,
-       only for mouse users who allow motion -->
-  <div class="cursor" aria-hidden="true"></div>
 
   <!-- Keyboard users can Tab to this and jump straight past the nav -->
   <a class="skip-link" href="#main">Skip to content</a>
@@ -742,11 +765,14 @@
 
         <!-- Rotated sticker (decorative, hence aria-hidden) -->
         <span class="badge-wrap"><span class="badge" aria-hidden="true">Booking projects ✦</span></span>
+
+        <!-- Slow-spinning star in the corner — pure decoration -->
+        <span class="hero__star" aria-hidden="true">✦</span>
       </div>
     </section>
 
     <!-- =================================================================
-         MARQUEE #1 — services ticker (ink).
+         MARQUEE #1 — services ticker on solid orange.
          Two identical groups; #2 is aria-hidden so screen readers
          hear the list only once.
          ================================================================= -->
@@ -823,7 +849,7 @@
     </section>
 
     <!-- =================================================================
-         SELECTED WORK (dark) — animated gradient thumbs + category chips
+         SELECTED WORK — the light "spotlight" section on the dark page
          ================================================================= -->
     <section class="section work" id="work">
       <div class="container">
@@ -944,7 +970,7 @@
     </section>
 
     <!-- =================================================================
-         MARQUEE #2 — "Let's talk", chartreuse, scrolling the other way.
+         MARQUEE #2 — "Let's talk", bone strip scrolling the other way.
          A drumroll right before the contact section.
          ================================================================= -->
     <div class="marquee marquee--talk" aria-hidden="true">
@@ -981,7 +1007,7 @@
   </main>
 
   <!-- ===================================================================
-       FOOTER
+       FOOTER — solid orange endcap
        =================================================================== -->
   <footer class="footer">
     <div class="container footer__inner">
@@ -997,21 +1023,20 @@
   </footer>
 
   <!-- =====================================================================
-       PROGRESSIVE ENHANCEMENT SCRIPT (~40 lines of plain JavaScript)
-       Two effects: scroll-reveal and the custom cursor ring.
+       PROGRESSIVE ENHANCEMENT SCRIPT (~20 lines of plain JavaScript)
+       One effect only: scroll-reveal.
        Golden rule: the site must work perfectly with JS turned OFF — that's
-       why the CSS gates all "hidden" states behind the .js class this
-       script adds. No JS → no class → everything simply visible.
+       why the CSS gates the "hidden" state behind the .js class this script
+       adds. No JS → no class → everything simply visible.
        ===================================================================== -->
   <script>
     // Flag that JS is running — this switches on the scroll-reveal CSS
     document.documentElement.classList.add('js');
 
-    // Respect the OS-level "reduce motion" setting everywhere
+    // Respect the OS-level "reduce motion" setting
     var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    /* ---- Scroll reveal ------------------------------------------------
-       IntersectionObserver tells us when an element enters the viewport —
+    /* IntersectionObserver tells us when an element enters the viewport —
        far cheaper than listening to every scroll event. Each element is
        revealed once, then unobserved (no wasted work afterwards). */
     var revealEls = document.querySelectorAll('.reveal');
@@ -1028,39 +1053,6 @@
         });
       }, { threshold: 0.12 });          // fire when ~12% of the element shows
       revealEls.forEach(function (el) { io.observe(el); });
-    }
-
-    /* ---- Custom cursor ring -------------------------------------------
-       Only for precise pointers (a real mouse — never touch screens) and
-       only when motion is allowed. The ring chases the pointer with a
-       little lag ("lerp" = move 18% of the remaining distance every frame)
-       which is what makes it feel fluid instead of glued to the cursor. */
-    var ring = document.querySelector('.cursor');
-    var finePointer = window.matchMedia('(pointer: fine)').matches;
-    if (ring && finePointer && !reduceMotion) {
-      document.body.classList.add('has-cursor');
-
-      var targetX = innerWidth / 2, targetY = innerHeight / 2; // where the mouse is
-      var ringX = targetX, ringY = targetY;                    // where the ring is
-
-      addEventListener('mousemove', function (e) {
-        targetX = e.clientX;
-        targetY = e.clientY;
-      });
-
-      (function follow() {
-        ringX += (targetX - ringX) * 0.18;
-        ringY += (targetY - ringY) * 0.18;
-        ring.style.transform =
-          'translate(' + ringX + 'px,' + ringY + 'px) translate(-50%,-50%)';
-        requestAnimationFrame(follow);   // re-runs every screen refresh
-      })();
-
-      // Grow the ring over anything clickable
-      document.querySelectorAll('a, button').forEach(function (el) {
-        el.addEventListener('mouseenter', function () { ring.classList.add('is-active'); });
-        el.addEventListener('mouseleave', function () { ring.classList.remove('is-active'); });
-      });
     }
   </script>
 </body>
