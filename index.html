@@ -1178,7 +1178,7 @@
                opens the visitor's mail app with everything pre-filled
                (the JS at the bottom composes the email). The action
                attribute is the no-JavaScript fallback. -->
-          <form class="form reveal" action="mailto:sadiqmanzoor.businness@gmail.com" method="post" enctype="text/plain">
+          <form class="form reveal" action="mailto:sadiqmanzoor.business@gmail.com" method="post" enctype="text/plain">
             <label class="field">
               <span>Your name</span>
               <input type="text" name="name" required autocomplete="name">
@@ -1196,7 +1196,7 @@
 
           <p class="contact__alt reveal">Prefer plain email? Write to me directly:</p>
           <!-- Primary CTA, appearance #3 -->
-          <a class="contact__email reveal" href="mailto:sadiqmanzoor.businness@gmail.com">sadiqmanzoor.businness@gmail.com</a>
+          <a class="contact__email reveal" href="mailto:sadiqmanzoor.business@gmail.com">sadiqmanzoor.business@gmail.com</a>
           <p class="contact__note reveal">Currently booking new projects — first come, first served.</p>
         </div>
       </div>
@@ -1209,11 +1209,10 @@
   <footer class="footer">
     <div class="container footer__inner">
       <p>&copy; 2026 Sadiq — designed, written &amp; hand-coded.</p>
-      <!-- TODO: LinkedIn and Dribbble are still placeholders -->
+      <!-- LinkedIn/Dribbble deliberately left out until those profiles
+           are ready — dead links hurt more than missing ones -->
       <ul class="footer__links">
-        <li><a href="#">LinkedIn</a></li>
         <li><a href="https://github.com/sadiqmanzoor-1" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-        <li><a href="#">Dribbble</a></li>
         <li><a href="#top">Back to top ↑</a></li>
       </ul>
     </div>
@@ -1266,7 +1265,7 @@
         var message = form.elements.message.value.trim();
         var subject = 'Project enquiry from ' + name;
         var body = message + '\n\n— ' + name + ' (' + email + ')';
-        window.location.href = 'mailto:sadiqmanzoor.businness@gmail.com' +
+        window.location.href = 'mailto:sadiqmanzoor.business@gmail.com' +
           '?subject=' + encodeURIComponent(subject) +
           '&body=' + encodeURIComponent(body);
       });
