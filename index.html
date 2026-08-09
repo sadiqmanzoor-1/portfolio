@@ -176,6 +176,9 @@
       font-size: 0.98rem;
       text-decoration: none;
       color: var(--ink);
+      background: transparent;          /* also covers <button> elements */
+      font-family: inherit;
+      cursor: pointer;
       transition: background 0.18s ease, color 0.18s ease;
     }
     .btn-pill:hover { background: var(--ink); color: var(--bg); }
@@ -651,6 +654,37 @@
     }
 
     /* =====================================================================
+       8b. MY VALUES — a 2×2 grid of principles, each with a big italic
+       serif number. Same visual family as Process, but roomier.
+       ===================================================================== */
+    .values__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.25rem;
+    }
+    @media (min-width: 640px) {
+      .values__grid { grid-template-columns: 1fr 1fr; gap: 2.5rem 3rem; }
+    }
+    .value { border-top: 1px solid var(--line); padding-top: 1.2rem; }
+    .value__num {
+      display: block;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.9rem;
+      color: var(--rose-deep);
+      margin-bottom: 0.7rem;
+      line-height: 1;
+    }
+    .value h3 {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: 1.35rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+    .value p { font-size: 0.95rem; color: var(--muted); max-width: 40ch; }
+
+    /* =====================================================================
        9. PROCESS — four columns, big serif numbers
        ===================================================================== */
     .process__grid {
@@ -688,34 +722,11 @@
     .about__text p + p { margin-top: 1rem; }
     .about__text .section__title { margin-bottom: 1.5rem; }
 
-    .about__list {
-      list-style: none;
-      padding: 0;
-      margin-top: 2.5rem;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.7rem 2.5rem;
-      font-size: 0.95rem;
-    }
-    @media (min-width: 640px) {
-      .about__list { grid-template-columns: 1fr 1fr; }
-    }
-    .about__list li {
-      padding-left: 1.4rem;
-      position: relative;
-    }
-    .about__list li::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0.5em;
-      width: 8px;
-      height: 8px;
-      background: var(--rose);
-    }
-
     /* =====================================================================
-       11. CONTACT — big serif invitation, the email as the destination
+       11. CONTACT — serif invitation + a real enquiry form.
+       The site is static (no server), so the form composes an email in
+       the visitor's own mail app — honest and dependency-free. Fields are
+       editorial: no boxes, just a hairline that turns rose when focused.
        ===================================================================== */
     .contact__title {
       font-size: clamp(2.2rem, 6vw, 4.2rem);
@@ -746,6 +757,46 @@
       margin-top: 1.5rem;
       font-size: 0.88rem;
       color: var(--muted);
+    }
+
+    .form {
+      display: grid;
+      gap: 1.5rem;
+      max-width: 560px;
+      margin-bottom: 3rem;
+    }
+    .field { display: grid; gap: 0.35rem; }
+    .field > span {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+    .field input,
+    .field textarea {
+      font: inherit;
+      color: var(--ink);
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      border-radius: 0;
+      padding: 0.55rem 0;
+      resize: vertical;
+      transition: border-color 0.15s ease;
+    }
+    /* The rose focus line replaces the default outline as the indicator */
+    .field input:focus,
+    .field textarea:focus {
+      outline: none;
+      border-bottom-color: var(--rose-deep);
+    }
+    .form .btn-pill { justify-self: start; }
+
+    .contact__alt {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
     }
 
     /* =====================================================================
@@ -816,9 +867,9 @@
       <a class="nav__wordmark" href="#top">Sadiq<sup>&reg;</sup></a>
       <nav aria-label="Main">
         <ul class="nav__links">
-          <li><a href="#services">Services</a></li>
           <li><a href="#work">Work</a></li>
-          <li><a href="#process">Process</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#values">Values</a></li>
           <li><a href="#about">About</a></li>
         </ul>
       </nav>
@@ -852,15 +903,17 @@
       <div class="container">
         <p class="label rise">Multi-disciplinary designer &amp; writer</p>
 
+        <!-- Name-first hero, like the reference site: the NAME is the
+             headline, the tagline does the explaining underneath -->
         <h1 class="title hero__title rise">
-          Design that speaks softly —
-          and <em class="u-squiggle">sells<svg class="squiggle" viewBox="0 0 130 14" aria-hidden="true"><path d="M3 10 C 20 2, 34 12, 52 8 S 86 3, 100 9 S 122 10, 127 7" fill="none" stroke="#E0A2AC" stroke-width="3.5" stroke-linecap="round"/></svg></em><span class="spark" aria-hidden="true">*</span>
+          Sadiq
+          <em class="u-squiggle">Manzoor<svg class="squiggle" viewBox="0 0 130 14" aria-hidden="true"><path d="M3 10 C 20 2, 34 12, 52 8 S 86 3, 100 9 S 122 10, 127 7" fill="none" stroke="#E0A2AC" stroke-width="3.5" stroke-linecap="round"/></svg></em><span class="spark" aria-hidden="true">*</span>
         </h1>
 
         <p class="hero__sub rise">
-          I'm Sadiq. I design and write the whole package — landing pages,
-          websites, Shopify stores, graphics and conversion copy. One
-          person, one vision, zero hand-offs.
+          I design and write the whole package — landing pages, websites,
+          Shopify stores, graphics and conversion copy — for brands that
+          want to look established. Design that speaks softly, and sells.
         </p>
 
         <p class="hero__actions rise">
@@ -881,25 +934,78 @@
          (the real list is below), so it's hidden from screen readers.
          ================================================================= -->
     <div class="ticker" aria-hidden="true">
+      <!-- The ticker now carries the design philosophy (mantra), like the
+           reference site — the concrete service list lives below -->
       <div class="ticker__track">
         <p class="ticker__group">
-          Landing pages <span class="star">✦</span> Web design <span class="star">✦</span>
-          Shopify <span class="star">✦</span> Graphic design <span class="star">✦</span>
-          Content writing <span class="star">✦</span> Brand identity <span class="star">✦</span>
-          Landing pages <span class="star">✦</span> Web design <span class="star">✦</span>
-          Shopify <span class="star">✦</span> Graphic design <span class="star">✦</span>
-          Content writing <span class="star">✦</span> Brand identity <span class="star">✦</span>
+          Clarity over cleverness <span class="star">✦</span> Conversion is the brief <span class="star">✦</span>
+          Craft in every pixel <span class="star">✦</span> Words that work <span class="star">✦</span>
+          Clarity over cleverness <span class="star">✦</span> Conversion is the brief <span class="star">✦</span>
+          Craft in every pixel <span class="star">✦</span> Words that work <span class="star">✦</span>
         </p>
         <p class="ticker__group">
-          Landing pages <span class="star">✦</span> Web design <span class="star">✦</span>
-          Shopify <span class="star">✦</span> Graphic design <span class="star">✦</span>
-          Content writing <span class="star">✦</span> Brand identity <span class="star">✦</span>
-          Landing pages <span class="star">✦</span> Web design <span class="star">✦</span>
-          Shopify <span class="star">✦</span> Graphic design <span class="star">✦</span>
-          Content writing <span class="star">✦</span> Brand identity <span class="star">✦</span>
+          Clarity over cleverness <span class="star">✦</span> Conversion is the brief <span class="star">✦</span>
+          Craft in every pixel <span class="star">✦</span> Words that work <span class="star">✦</span>
+          Clarity over cleverness <span class="star">✦</span> Conversion is the brief <span class="star">✦</span>
+          Craft in every pixel <span class="star">✦</span> Words that work <span class="star">✦</span>
         </p>
       </div>
     </div>
+
+    <!-- =================================================================
+         SELECTED WORK — first section after the hero, like the reference
+         site: the portfolio leads. White cards on the blush section.
+         ================================================================= -->
+    <section class="section section--blush" id="work">
+      <div class="container row">
+        <p class="label reveal">Selected work</p>
+
+        <div>
+          <h2 class="title section__title reveal">Recent <em>projects</em>.</h2>
+
+          <div class="work__grid">
+            <a class="work-card reveal" href="#work">
+              <div class="work-card__thumb thumb--atelier">
+                <span class="work-card__letter" aria-hidden="true">A</span>
+                <span class="work-card__go" aria-hidden="true">↗</span>
+              </div>
+              <div class="work-card__body">
+                <h3>Atelier</h3>
+                <p class="work-card__meta"><span>Shopify theme · Fashion</span><span>2026</span></p>
+              </div>
+            </a>
+
+            <a class="work-card reveal" href="#work" style="--d: 0.07s">
+              <div class="work-card__thumb thumb--brightsmile">
+                <span class="work-card__letter" aria-hidden="true">B</span>
+                <span class="work-card__go" aria-hidden="true">↗</span>
+              </div>
+              <div class="work-card__body">
+                <h3>BrightSmile</h3>
+                <p class="work-card__meta"><span>Landing page · Dental</span><span>2026</span></p>
+              </div>
+            </a>
+
+            <!-- The third slot sells the NEXT project -->
+            <a class="work-card reveal" href="#contact" style="--d: 0.14s">
+              <div class="work-card__thumb thumb--open">
+                <span class="work-card__letter" aria-hidden="true">?</span>
+                <span class="work-card__go" aria-hidden="true">↗</span>
+              </div>
+              <div class="work-card__body">
+                <h3>Your project</h3>
+                <p class="work-card__meta"><span>Open slot — let's fill it</span><span>Soon</span></p>
+              </div>
+            </a>
+          </div>
+
+          <p class="work-note reveal">
+            Case studies are being written — full breakdowns with process
+            and results will appear here.
+          </p>
+        </div>
+      </div>
+    </section>
 
     <!-- =================================================================
          SERVICES — label left, numbered serif list right
@@ -951,55 +1057,38 @@
     </section>
 
     <!-- =================================================================
-         SELECTED WORK — white cards on the blush "pink moment" section
+         MY VALUES — how I think, not just what I sell. Borrowed from the
+         reference site's "My Values": it builds trust before the ask.
          ================================================================= -->
-    <section class="section section--blush" id="work">
+    <section class="section" id="values">
       <div class="container row">
-        <p class="label reveal">Selected work</p>
+        <p class="label reveal">My values</p>
 
         <div>
-          <h2 class="title section__title reveal">Recent <em>projects</em>.</h2>
+          <h2 class="title section__title reveal">What I believe about <em>good design</em>.</h2>
 
-          <div class="work__grid">
-            <a class="work-card reveal" href="#work">
-              <div class="work-card__thumb thumb--atelier">
-                <span class="work-card__letter" aria-hidden="true">A</span>
-                <span class="work-card__go" aria-hidden="true">↗</span>
-              </div>
-              <div class="work-card__body">
-                <h3>Atelier</h3>
-                <p class="work-card__meta"><span>Shopify theme · Fashion</span><span>2026</span></p>
-              </div>
-            </a>
-
-            <a class="work-card reveal" href="#work" style="--d: 0.07s">
-              <div class="work-card__thumb thumb--brightsmile">
-                <span class="work-card__letter" aria-hidden="true">B</span>
-                <span class="work-card__go" aria-hidden="true">↗</span>
-              </div>
-              <div class="work-card__body">
-                <h3>BrightSmile</h3>
-                <p class="work-card__meta"><span>Landing page · Dental</span><span>2026</span></p>
-              </div>
-            </a>
-
-            <!-- The third slot sells the NEXT project -->
-            <a class="work-card reveal" href="#contact" style="--d: 0.14s">
-              <div class="work-card__thumb thumb--open">
-                <span class="work-card__letter" aria-hidden="true">?</span>
-                <span class="work-card__go" aria-hidden="true">↗</span>
-              </div>
-              <div class="work-card__body">
-                <h3>Your project</h3>
-                <p class="work-card__meta"><span>Open slot — let's fill it</span><span>Soon</span></p>
-              </div>
-            </a>
+          <div class="values__grid">
+            <div class="value reveal">
+              <span class="value__num" aria-hidden="true">01</span>
+              <h3>Clarity over cleverness</h3>
+              <p>If a visitor has to think about what you do, the design has failed. Clear first, clever second.</p>
+            </div>
+            <div class="value reveal" style="--d: 0.06s">
+              <span class="value__num" aria-hidden="true">02</span>
+              <h3>Conversion is the brief</h3>
+              <p>Pretty is not the goal. Every layout and every sentence starts from one question — does this help someone say yes?</p>
+            </div>
+            <div class="value reveal" style="--d: 0.12s">
+              <span class="value__num" aria-hidden="true">03</span>
+              <h3>One vision, zero hand-offs</h3>
+              <p>Design and words from one head means nothing gets lost in translation between specialists.</p>
+            </div>
+            <div class="value reveal" style="--d: 0.18s">
+              <span class="value__num" aria-hidden="true">04</span>
+              <h3>Honest, always</h3>
+              <p>Fixed quotes, real timelines, jargon-free updates — and if something isn't worth your money, I'll tell you.</p>
+            </div>
           </div>
-
-          <p class="work-note reveal">
-            Case studies are being written — full breakdowns with process
-            and results will appear here.
-          </p>
         </div>
       </div>
     </section>
@@ -1062,14 +1151,11 @@
             same-day replies.
           </p>
 
-          <ul class="about__list">
-            <li>Conversion-first thinking</li>
-            <li>Design &amp; words under one roof</li>
-            <li>Hand-coded — no bloated builders</li>
-            <li>Pixel-perfect on mobile</li>
-            <li>Fast turnarounds</li>
-            <li>Honest, jargon-free communication</li>
-          </ul>
+          <p>
+            What you can count on: pixel-perfect mobile builds, fast
+            turnarounds, and hand-coded sites with no bloated page builders
+            — from first call to launch.
+          </p>
         </div>
       </div>
     </section>
@@ -1087,6 +1173,28 @@
             Tell me about it — I reply within 24 hours with first ideas and
             a clear quote. No pressure, no jargon.
           </p>
+
+          <!-- Enquiry form. No server on a static site, so submitting
+               opens the visitor's mail app with everything pre-filled
+               (the JS at the bottom composes the email). The action
+               attribute is the no-JavaScript fallback. -->
+          <form class="form reveal" action="mailto:sadiqmanzoor.businness@gmail.com" method="post" enctype="text/plain">
+            <label class="field">
+              <span>Your name</span>
+              <input type="text" name="name" required autocomplete="name">
+            </label>
+            <label class="field">
+              <span>Your email</span>
+              <input type="email" name="email" required autocomplete="email">
+            </label>
+            <label class="field">
+              <span>About your project</span>
+              <textarea name="message" rows="4" required placeholder="What are we making, and when do you need it?"></textarea>
+            </label>
+            <button class="btn-pill" type="submit">Send enquiry</button>
+          </form>
+
+          <p class="contact__alt reveal">Prefer plain email? Write to me directly:</p>
           <!-- Primary CTA, appearance #3 -->
           <a class="contact__email reveal" href="mailto:sadiqmanzoor.businness@gmail.com">sadiqmanzoor.businness@gmail.com</a>
           <p class="contact__note reveal">Currently booking new projects — first come, first served.</p>
@@ -1142,6 +1250,26 @@
         });
       }, { threshold: 0.12 });          // fire when ~12% of the element shows
       revealEls.forEach(function (el) { io.observe(el); });
+    }
+
+    /* ---- Enquiry form ---------------------------------------------------
+       A static site has no server to receive form data, so instead we
+       compose a ready-to-send email and open it in the visitor's own mail
+       app. encodeURIComponent keeps special characters (&, ?, newlines)
+       from breaking the mailto link. */
+    var form = document.querySelector('.form');
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var name = form.elements.name.value.trim();
+        var email = form.elements.email.value.trim();
+        var message = form.elements.message.value.trim();
+        var subject = 'Project enquiry from ' + name;
+        var body = message + '\n\n— ' + name + ' (' + email + ')';
+        window.location.href = 'mailto:sadiqmanzoor.businness@gmail.com' +
+          '?subject=' + encodeURIComponent(subject) +
+          '&body=' + encodeURIComponent(body);
+      });
     }
   </script>
 </body>
