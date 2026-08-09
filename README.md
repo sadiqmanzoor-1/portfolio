@@ -6,9 +6,10 @@ Built as a single `index.html` — all CSS and a small vanilla-JS enhancement
 script (scroll reveal) live inside the file. No frameworks, no build tools.
 The site works fully even with JavaScript disabled.
 
-Theme: "Swiss Rose" — Swiss-minimal design: one typeface (Inter), black on
-white, hairline dividers, maximum whitespace, and dusty-rose pink
-(`#E0A2AC`) in small precise doses. All colors are CSS variables in `:root`.
+Theme: "Editorial Rose" — serif headlines (Fraunces) with italic rose
+accents, Inter for body text, hairline dividers, generous whitespace, a
+blush-pink Work section, and dusty-rose pink (`#E0A2AC`) accents. All
+colors are CSS variables in `:root`.
 
 ## Preview locally
 

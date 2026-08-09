@@ -18,41 +18,48 @@
 
   <!-- Tiny inline favicon (white square, ink S, rose dot) — an SVG encoded
        as a data URI, so no extra image file is needed. -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23FFFFFF'/%3E%3Ctext x='7' y='12' font-size='11' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='%23111111'%3ES%3C/text%3E%3Ccircle cx='13' cy='11' r='2' fill='%23E0A2AC'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23FFFFFF'/%3E%3Ctext x='7' y='12' font-size='11' font-family='serif' font-weight='bold' text-anchor='middle' fill='%23141414'%3ES%3C/text%3E%3Ccircle cx='13' cy='11' r='2' fill='%23E0A2AC'/%3E%3C/svg%3E">
 
-  <!-- Google Fonts: Inter — ONE typeface for everything, in three weights.
-       That single-family discipline is the heart of the Swiss look.
-       preconnect opens the connection early so the font arrives faster;
-       offline, the system fallback (Helvetica/Arial) looks nearly identical. -->
+  <!-- Google Fonts: TWO voices —
+       · Fraunces (serif) for headlines: warm, characterful, "studio" feel.
+         Its ITALIC is the personality of this design.
+       · Inter (sans) for everything readable: body, labels, UI.
+       preconnect opens the connection early so fonts arrive faster;
+       offline, Georgia/Helvetica fallbacks keep the page working. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
     /* =====================================================================
-       1. DESIGN TOKENS — theme: "SWISS ROSE"
-       Swiss-minimal rules this design follows:
-         · ONE typeface (Inter), sentence case, tight letter-spacing
-         · black on white, maximum whitespace, hairline dividers
-         · the pink appears only in SMALL, precise doses — a dot, a label,
-           an underline. Restraint is what makes it feel expensive.
-         · no shadows, no rotation, no decoration that isn't information
+       1. DESIGN TOKENS — theme: "EDITORIAL ROSE"
+       The middle path between loud and bare:
+         · serif headlines with italic accents = personality
+         · sans body, hairlines, whitespace = calm structure
+         · pink in measured doses, plus ONE full blush section (Work)
+         · soft, realistic shadows — never hard poster shadows
        ===================================================================== */
     :root {
-      --bg:        #FFFFFF;                 /* canvas — pure white           */
-      --ink:       #111111;                 /* text — neutral near-black     */
-      --muted:     rgba(17, 17, 17, 0.58);  /* secondary text                */
-      --line:      rgba(17, 17, 17, 0.16);  /* hairline dividers             */
-      --rose:      #E0A2AC;                 /* the pink — dots, underlines   */
-      --rose-deep: #A64D5C;                 /* deeper rose for SMALL text    */
-      --blush:     #FAF3F4;                 /* faint pink surface tint       */
+      --bg:        #FFFFFF;                 /* canvas — white                 */
+      --ink:       #141414;                 /* text — near-black              */
+      --muted:     rgba(20, 20, 20, 0.60);  /* secondary text                 */
+      --line:      rgba(20, 20, 20, 0.14);  /* hairline dividers              */
+      --rose:      #E0A2AC;                 /* the pink — accents, gradients  */
+      --rose-deep: #A64D5C;                 /* deeper rose for small text     */
+      --blush:     #F9F1F2;                 /* pale pink section background   */
+      --lilac:     #C9B8FF;                 /* gradient support color         */
 
-      --font: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --font-serif: "Fraunces", Georgia, "Times New Roman", serif;
+      --font-sans:  "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
       /* clamp(min, preferred, max) scales with the viewport — tight spacing
          on phones, generous on desktop */
       --space-section: clamp(4.5rem, 11vw, 8.5rem);
       --space-gutter:  clamp(1.25rem, 5vw, 3rem);
+      --radius: 16px;
+
+      /* One soft shadow used everywhere (cards) — layered like real light */
+      --shadow: 0 2px 6px rgba(20, 20, 20, 0.05), 0 16px 40px rgba(20, 20, 20, 0.09);
     }
 
     /* =====================================================================
@@ -73,7 +80,7 @@
     body {
       background: var(--bg);
       color: var(--ink);
-      font-family: var(--font);
+      font-family: var(--font-sans);
       font-size: 1rem;
       line-height: 1.65;
       -webkit-font-smoothing: antialiased;
@@ -81,48 +88,47 @@
 
     img { max-width: 100%; display: block; }
 
-    /* Text selection — one of the few places the pink shows up */
     ::selection { background: var(--rose); color: var(--ink); }
 
     /* Keyboard-focus ring (only for keyboard users, not mouse clicks) */
     :focus-visible {
       outline: 2px solid var(--rose-deep);
       outline-offset: 3px;
+      border-radius: 4px;
     }
 
     /* =====================================================================
        3. UTILITIES
        ===================================================================== */
     .container {
-      max-width: 1140px;
+      max-width: 1160px;
       margin-inline: auto;
       padding-inline: var(--space-gutter);
     }
 
-    /* The Swiss layout backbone: every section is a two-column grid —
-       a narrow LABEL column on the left ("Services", "Work"…) and the
-       CONTENT on the right. On phones the label simply stacks on top. */
-    .row {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
+    /* Serif headline voice — used by every title on the page.
+       Weight 500, tight leading; <em> inside becomes the italic accent
+       in deep rose. That serif-italic flourish IS the brand. */
+    .title {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      line-height: 1.06;
     }
-    @media (min-width: 820px) {
-      .row { grid-template-columns: 200px 1fr; gap: 3rem; }
+    .title em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--rose-deep);
     }
 
-    /* Small uppercase label — the ONLY uppercase text in the design.
-       Tiny, letter-spaced, quiet. */
+    /* Small uppercase label — quiet, letter-spaced, with a rose square */
     .label {
       font-size: 0.72rem;
-      font-weight: 500;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.14em;
       color: var(--muted);
     }
-
-    /* A small rose square that precedes labels — the signature pink dose.
-       Purely decorative, so it's built in CSS (no extra markup meaning). */
     .label::before {
       content: "";
       display: inline-block;
@@ -130,12 +136,12 @@
       height: 8px;
       background: var(--rose);
       margin-right: 0.6em;
-      vertical-align: baseline;
     }
 
-    /* Text links: quiet by default, rose underline on hover */
+    /* Text link: hairline underline that turns rose on hover */
     .link {
       color: var(--ink);
+      font-weight: 500;
       text-decoration: underline;
       text-decoration-color: var(--line);
       text-decoration-thickness: 1px;
@@ -143,6 +149,21 @@
       transition: text-decoration-color 0.15s ease;
     }
     .link:hover { text-decoration-color: var(--rose-deep); }
+
+    /* Pill button: 1px border, fills with ink on hover — presence
+       without shouting */
+    .btn-pill {
+      display: inline-block;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      padding: 0.8rem 1.7rem;
+      font-weight: 500;
+      font-size: 0.98rem;
+      text-decoration: none;
+      color: var(--ink);
+      transition: background 0.18s ease, color 0.18s ease;
+    }
+    .btn-pill:hover { background: var(--ink); color: var(--bg); }
 
     /* "Skip to content" for keyboard users — parked off-screen until Tab */
     .skip-link {
@@ -153,6 +174,7 @@
       background: var(--ink);
       color: var(--bg);
       padding: 0.5rem 1rem;
+      border-radius: 999px;
       text-decoration: none;
       font-size: 0.85rem;
     }
@@ -162,11 +184,11 @@
        Elements with .reveal rise gently into view (the JS at the bottom
        adds .is-visible). The hidden state only applies when <html> has the
        .js class, which the script adds — no JavaScript, no hiding.
-       Swiss restraint: a small 14px rise, nothing theatrical. */
+       Elements can stagger via a --d (delay) custom property. */
     .js .reveal {
       opacity: 0;
-      transform: translateY(14px);
-      transition: opacity 0.55s ease, transform 0.55s ease;
+      transform: translateY(18px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
       transition-delay: var(--d, 0s);
     }
     .js .reveal.is-visible {
@@ -175,7 +197,7 @@
     }
 
     /* =====================================================================
-       4. STICKY NAV — a quiet strip with a hairline underneath
+       4. STICKY NAV — quiet strip, serif wordmark, pulsing availability dot
        ===================================================================== */
     .nav {
       position: sticky;
@@ -194,13 +216,13 @@
       padding-block: 1rem;
     }
     .nav__wordmark {
+      font-family: var(--font-serif);
       font-weight: 600;
-      font-size: 1rem;
-      letter-spacing: 0.02em;
+      font-size: 1.2rem;
       text-decoration: none;
       color: var(--ink);
     }
-    .nav__wordmark sup { font-size: 0.55em; }
+    .nav__wordmark sup { font-size: 0.5em; }
 
     .nav__links {
       display: none;                    /* hidden on phones — see media query */
@@ -219,7 +241,7 @@
       .nav__links { display: flex; }
     }
 
-    /* Nav CTA: plain text with a pulsing rose dot — availability signal */
+    /* Nav CTA: text with a pulsing rose dot — a live availability signal */
     .nav__cta {
       display: inline-flex;
       align-items: center;
@@ -244,39 +266,35 @@
     .nav__cta:hover { text-decoration: underline; text-underline-offset: 4px; }
 
     /* =====================================================================
-       5. HERO — one big, quiet statement
+       5. HERO — big serif statement with an italic rose accent
        ===================================================================== */
     .hero { padding-block: var(--space-section); }
 
     .hero__title {
-      font-size: clamp(2.1rem, 6vw, 4.3rem);
-      font-weight: 600;
-      line-height: 1.08;
-      letter-spacing: -0.03em;          /* big text needs tighter tracking */
-      max-width: 21ch;
-      margin: 1.5rem 0 2rem;
+      font-size: clamp(2.7rem, 8vw, 5.5rem);
+      max-width: 16ch;
+      margin: 1.75rem 0 2rem;
     }
-    /* The one pink word in the headline — colored, not decorated */
-    .hero__title em {
+    /* The little rose asterisk that ends the headline — an editorial
+       signature, like a printer's mark */
+    .hero__title .spark {
+      color: var(--rose);
       font-style: normal;
-      color: var(--rose-deep);
     }
 
     .hero__sub {
-      max-width: 46ch;
+      max-width: 48ch;
       color: var(--muted);
-      font-size: clamp(1rem, 2vw, 1.125rem);
+      font-size: clamp(1rem, 2vw, 1.15rem);
       margin-bottom: 2.5rem;
     }
 
-    /* Hero actions: text links, not buttons — Swiss sites don't shout */
     .hero__actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 2rem;
-      font-weight: 500;
+      align-items: center;
+      gap: 1.25rem 2rem;
     }
-    .hero__actions .link { font-size: 1.05rem; }
 
     /* Meta line at the bottom of the hero: location + availability */
     .hero__meta {
@@ -302,54 +320,63 @@
       .hero .rise:nth-child(5) { animation-delay: 0.28s; }
     }
     @keyframes rise {
-      from { opacity: 0; transform: translateY(18px); }
+      from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: none; }
     }
 
     /* =====================================================================
-       6. SECTION SHELL — every section: hairline on top, label left,
-       content right (the .row grid), generous vertical padding
+       6. SECTION SHELL — hairline top, label left, content right
        ===================================================================== */
     .section {
       padding-block: var(--space-section);
       border-top: 1px solid var(--line);
     }
+    /* The one full blush section (Work) — the page's "pink moment" */
+    .section--blush { background: var(--blush); }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 820px) {
+      .row { grid-template-columns: 200px 1fr; gap: 3rem; }
+    }
 
     .section__title {
-      font-size: clamp(1.5rem, 3.4vw, 2.3rem);
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      line-height: 1.15;
-      max-width: 24ch;
+      font-size: clamp(1.8rem, 4.2vw, 2.9rem);
+      max-width: 22ch;
       margin-bottom: clamp(2rem, 5vw, 3.25rem);
     }
 
     /* =====================================================================
-       7. SERVICES — numbered list with hairline separators
+       7. SERVICES — numbered list, serif names, hairline separators
        ===================================================================== */
     .service {
       display: grid;
-      grid-template-columns: 2.6rem 1fr;
+      grid-template-columns: 2.8rem 1fr;
       gap: 0.35rem 1rem;
-      padding-block: 1.35rem;
+      padding-block: 1.5rem;
       border-top: 1px solid var(--line);
     }
     .service:last-child { border-bottom: 1px solid var(--line); }
     @media (min-width: 720px) {
       /* Wide screens: description gets its own right-hand column */
-      .service { grid-template-columns: 2.6rem 1fr 1.2fr; align-items: baseline; }
+      .service { grid-template-columns: 2.8rem 1.1fr 1.2fr; align-items: baseline; }
     }
 
     .service__num {
-      font-size: 0.78rem;
-      font-weight: 500;
+      font-size: 0.8rem;
+      font-weight: 600;
       color: var(--rose-deep);
       letter-spacing: 0.06em;
     }
     .service__name {
-      font-size: clamp(1.15rem, 2.6vw, 1.55rem);
+      font-family: var(--font-serif);
       font-weight: 500;
+      font-size: clamp(1.35rem, 3vw, 1.9rem);
       letter-spacing: -0.01em;
+      line-height: 1.1;
     }
     .service__desc {
       grid-column: 2;
@@ -362,102 +389,115 @@
     }
 
     /* =====================================================================
-       8. SELECTED WORK — an index, like a table of contents.
-       Each row: number · name · category · year. The whole row is a link;
-       hovering tints it blush and slides in a small arrow.
+       8. SELECTED WORK — real cards on the blush section.
+       White cards, soft layered shadows, gradient covers with a big
+       serif-italic initial. Hover: a gentle lift (never a hard shadow).
        ===================================================================== */
-    .work-row {
+    .work__grid {
       display: grid;
-      grid-template-columns: 2.6rem 1fr auto;
-      gap: 0.2rem 1rem;
-      align-items: baseline;
-      padding: 1.35rem 0.5rem;
-      border-top: 1px solid var(--line);
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+    @media (min-width: 820px) {
+      .work__grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .work-card {
+      display: block;
       text-decoration: none;
       color: inherit;
-      transition: background 0.15s ease;
+      background: var(--bg);
+      border-radius: var(--radius);
+      overflow: hidden;                  /* clips the cover's corners */
+      box-shadow: 0 1px 3px rgba(20, 20, 20, 0.06);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
-    .work-row:last-of-type { border-bottom: 1px solid var(--line); }
-    @media (min-width: 720px) {
-      .work-row { grid-template-columns: 2.6rem 1.4fr 1fr auto auto; }
+    .work-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow);
     }
 
-    .work-row__num {
-      font-size: 0.78rem;
+    /* Project "covers" are pure CSS gradients — no image files. The
+       gradient is double-sized and drifts slowly, so covers feel alive. */
+    .work-card__thumb {
+      aspect-ratio: 4 / 3;
+      display: grid;
+      place-items: center;
+      background-size: 180% 180%;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    @keyframes drift {
+      from { background-position: 0% 0%; }
+      to   { background-position: 100% 100%; }
+    }
+    .thumb--atelier     { background-image: linear-gradient(135deg, #E0A2AC, #C9B8FF); }
+    .thumb--brightsmile { background-image: linear-gradient(135deg, #A64D5C, #E0A2AC); }
+    .thumb--open        { background-image: linear-gradient(135deg, #F3E3E6, #E0A2AC); }
+
+    /* The big serif-italic initial floating on each cover */
+    .work-card__letter {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 5rem;
+      color: rgba(255, 255, 255, 0.65);
+      user-select: none;
+    }
+    .thumb--open .work-card__letter { color: rgba(166, 77, 92, 0.55); }
+
+    .work-card__body {
+      padding: 1.3rem 1.4rem 1.5rem;
+      border-top: 1px solid var(--line);
+    }
+    .work-card__body h3 {
+      font-family: var(--font-serif);
       font-weight: 500;
-      color: var(--rose-deep);
+      font-size: 1.3rem;
+      margin-bottom: 0.25rem;
     }
-    .work-row__name {
-      font-size: clamp(1.15rem, 2.6vw, 1.55rem);
-      font-weight: 500;
-      letter-spacing: -0.01em;
-    }
-    .work-row__cat {
-      grid-column: 2;
+    .work-card__meta {
+      font-size: 0.88rem;
       color: var(--muted);
-      font-size: 0.92rem;
-    }
-    .work-row__year {
-      color: var(--muted);
-      font-size: 0.92rem;
-      grid-row: 1;
-      grid-column: 3;
-    }
-    @media (min-width: 720px) {
-      .work-row__cat  { grid-column: 3; grid-row: 1; }
-      .work-row__year { grid-column: 4; }
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
     }
 
-    /* The arrow only exists on wide screens, sliding in on hover */
-    .work-row__arrow {
-      display: none;
-      color: var(--rose-deep);
-      opacity: 0;
-      transform: translateX(-8px);
-      transition: opacity 0.15s ease, transform 0.15s ease;
-    }
-    @media (min-width: 720px) {
-      .work-row__arrow { display: block; grid-column: 5; grid-row: 1; }
-    }
-    .work-row:hover { background: var(--blush); }
-    .work-row:hover .work-row__arrow { opacity: 1; transform: none; }
-
-    /* Footnote under the work list */
     .work-note {
-      margin-top: 1.5rem;
+      margin-top: 1.75rem;
       font-size: 0.88rem;
       color: var(--muted);
     }
 
     /* =====================================================================
-       9. PROCESS — four quiet columns
+       9. PROCESS — four columns, big serif numbers
        ===================================================================== */
     .process__grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 2rem;
+      gap: 2.25rem;
     }
     @media (min-width: 560px) { .process__grid { grid-template-columns: repeat(2, 1fr); } }
     @media (min-width: 960px) { .process__grid { grid-template-columns: repeat(4, 1fr); gap: 2.5rem; } }
 
-    .process-step { border-top: 1px solid var(--line); padding-top: 1.1rem; }
+    .process-step { border-top: 1px solid var(--line); padding-top: 1.2rem; }
     .process-step__num {
       display: block;
-      font-size: 0.78rem;
-      font-weight: 500;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.9rem;
       color: var(--rose-deep);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.7rem;
+      line-height: 1;
     }
     .process-step h3 {
       font-size: 1.05rem;
       font-weight: 600;
       margin-bottom: 0.5rem;
-      letter-spacing: -0.01em;
     }
     .process-step p { font-size: 0.92rem; color: var(--muted); }
 
     /* =====================================================================
-       10. ABOUT — statement + a plain checklist (no cards, no rotation)
+       10. ABOUT — statement + checklist with rose squares
        ===================================================================== */
     .about__text p {
       max-width: 52ch;
@@ -478,7 +518,6 @@
     @media (min-width: 640px) {
       .about__list { grid-template-columns: 1fr 1fr; }
     }
-    /* Each point gets a small rose square — same signature as the labels */
     .about__list li {
       padding-left: 1.4rem;
       position: relative;
@@ -494,16 +533,12 @@
     }
 
     /* =====================================================================
-       11. CONTACT — the email is the destination of the whole page,
-       so it's the largest text after the hero
+       11. CONTACT — big serif invitation, the email as the destination
        ===================================================================== */
     .contact__title {
-      font-size: clamp(1.9rem, 5vw, 3.4rem);
-      font-weight: 600;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      max-width: 16ch;
-      margin-bottom: 1.25rem;
+      font-size: clamp(2.2rem, 6vw, 4.2rem);
+      max-width: 15ch;
+      margin-bottom: 1.5rem;
     }
     .contact__sub {
       max-width: 46ch;
@@ -512,14 +547,14 @@
     }
     .contact__email {
       display: inline-block;
-      font-size: clamp(1.15rem, 3.4vw, 2.1rem);
+      font-family: var(--font-serif);
+      font-size: clamp(1.2rem, 3.6vw, 2.3rem);
       font-weight: 500;
-      letter-spacing: -0.02em;
       color: var(--ink);
       text-decoration: underline;
       text-decoration-color: var(--rose);
-      text-decoration-thickness: 2px;
-      text-underline-offset: 6px;
+      text-decoration-thickness: 3px;
+      text-underline-offset: 7px;
       max-width: 100%;
       overflow-wrap: anywhere;          /* long address never overflows a phone */
       transition: text-decoration-color 0.15s ease;
@@ -532,9 +567,10 @@
     }
 
     /* =====================================================================
-       12. FOOTER — a hairline and small print, nothing more
+       12. FOOTER — small print on a blush strip
        ===================================================================== */
     .footer {
+      background: var(--blush);
       border-top: 1px solid var(--line);
       padding-block: 2rem;
     }
@@ -570,11 +606,14 @@
     /* =====================================================================
        13. REDUCED MOTION
        For users whose OS asks for less animation: no smooth scroll, no
-       entrance animations, no pulsing dot. Fully usable, just still.
+       entrance animations, no pulsing dot, no drifting covers, no lifts.
+       Fully usable, just still.
        ===================================================================== */
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      .nav__cta::before { animation: none; }
+      .nav__cta::before, .work-card__thumb { animation: none; }
+      .work-card { transition: none; }
+      .work-card:hover { transform: none; }
       .js .reveal { opacity: 1; transform: none; transition: none; }
     }
   </style>
@@ -589,7 +628,7 @@
        =================================================================== -->
   <header class="nav">
     <div class="container nav__inner">
-      <a class="nav__wordmark" href="#top">SADIQ<sup>&reg;</sup></a>
+      <a class="nav__wordmark" href="#top">Sadiq<sup>&reg;</sup></a>
       <nav aria-label="Main">
         <ul class="nav__links">
           <li><a href="#services">Services</a></li>
@@ -606,15 +645,15 @@
   <main id="main">
 
     <!-- =================================================================
-         HERO — label, statement, two links, meta line
+         HERO — label, serif statement, actions, meta line
          ================================================================= -->
     <section class="hero" id="top">
       <div class="container">
         <p class="label rise">Multi-disciplinary designer &amp; writer</p>
 
-        <h1 class="hero__title rise">
-          Design, words and websites for brands that want to look
-          <em>established</em>.
+        <h1 class="title hero__title rise">
+          Design that speaks softly —
+          and <em>sells</em><span class="spark" aria-hidden="true">*</span>
         </h1>
 
         <p class="hero__sub rise">
@@ -625,8 +664,8 @@
 
         <p class="hero__actions rise">
           <!-- Primary CTA, appearance #2 -->
-          <a class="link" href="#contact">Start a project →</a>
-          <a class="link" href="#work">Selected work</a>
+          <a class="btn-pill" href="#contact">Start a project</a>
+          <a class="link" href="#work">Selected work →</a>
         </p>
 
         <p class="hero__meta rise">
@@ -637,15 +676,15 @@
     </section>
 
     <!-- =================================================================
-         SERVICES — label left, numbered list right
+         SERVICES — label left, numbered serif list right
          ================================================================= -->
     <section class="section" id="services">
       <div class="container row">
         <p class="label reveal">Services</p>
 
         <div>
-          <h2 class="section__title reveal">
-            Everything a small brand needs — under one roof.
+          <h2 class="title section__title reveal">
+            Everything a small brand needs — <em>under one roof</em>.
           </h2>
 
           <div class="reveal" style="--d: 0.05s">
@@ -685,36 +724,45 @@
     </section>
 
     <!-- =================================================================
-         SELECTED WORK — an index of projects, each row a link
+         SELECTED WORK — white cards on the blush "pink moment" section
          ================================================================= -->
-    <section class="section" id="work">
+    <section class="section section--blush" id="work">
       <div class="container row">
         <p class="label reveal">Selected work</p>
 
         <div>
-          <h2 class="section__title reveal">Recent projects.</h2>
+          <h2 class="title section__title reveal">Recent <em>projects</em>.</h2>
 
-          <div class="reveal" style="--d: 0.05s">
-            <a class="work-row" href="#work">
-              <span class="work-row__num">01</span>
-              <span class="work-row__name">Atelier</span>
-              <span class="work-row__cat">Shopify theme · Fashion</span>
-              <span class="work-row__year">2026</span>
-              <span class="work-row__arrow" aria-hidden="true">→</span>
+          <div class="work__grid">
+            <a class="work-card reveal" href="#work">
+              <div class="work-card__thumb thumb--atelier">
+                <span class="work-card__letter" aria-hidden="true">A</span>
+              </div>
+              <div class="work-card__body">
+                <h3>Atelier</h3>
+                <p class="work-card__meta"><span>Shopify theme · Fashion</span><span>2026</span></p>
+              </div>
             </a>
-            <a class="work-row" href="#work">
-              <span class="work-row__num">02</span>
-              <span class="work-row__name">BrightSmile</span>
-              <span class="work-row__cat">Landing page · Dental</span>
-              <span class="work-row__year">2026</span>
-              <span class="work-row__arrow" aria-hidden="true">→</span>
+
+            <a class="work-card reveal" href="#work" style="--d: 0.07s">
+              <div class="work-card__thumb thumb--brightsmile">
+                <span class="work-card__letter" aria-hidden="true">B</span>
+              </div>
+              <div class="work-card__body">
+                <h3>BrightSmile</h3>
+                <p class="work-card__meta"><span>Landing page · Dental</span><span>2026</span></p>
+              </div>
             </a>
-            <a class="work-row" href="#contact">
-              <span class="work-row__num">03</span>
-              <span class="work-row__name">Your project</span>
-              <span class="work-row__cat">Open slot — let's fill it</span>
-              <span class="work-row__year">Soon</span>
-              <span class="work-row__arrow" aria-hidden="true">→</span>
+
+            <!-- The third slot sells the NEXT project -->
+            <a class="work-card reveal" href="#contact" style="--d: 0.14s">
+              <div class="work-card__thumb thumb--open">
+                <span class="work-card__letter" aria-hidden="true">?</span>
+              </div>
+              <div class="work-card__body">
+                <h3>Your project</h3>
+                <p class="work-card__meta"><span>Open slot — let's fill it</span><span>Soon</span></p>
+              </div>
             </a>
           </div>
 
@@ -727,33 +775,33 @@
     </section>
 
     <!-- =================================================================
-         PROCESS — four quiet columns
+         PROCESS — four columns, italic serif numbers
          ================================================================= -->
     <section class="section" id="process">
       <div class="container row">
         <p class="label reveal">Process</p>
 
         <div>
-          <h2 class="section__title reveal">Four steps. No surprises.</h2>
+          <h2 class="title section__title reveal">Four steps. <em>No surprises.</em></h2>
 
           <div class="process__grid reveal" style="--d: 0.05s">
             <div class="process-step">
-              <span class="process-step__num">01</span>
+              <span class="process-step__num" aria-hidden="true">01</span>
               <h3>Discover</h3>
               <p>A 30-minute call to nail your goals, audience and budget — then a fixed quote, in writing.</p>
             </div>
             <div class="process-step">
-              <span class="process-step__num">02</span>
+              <span class="process-step__num" aria-hidden="true">02</span>
               <h3>Design</h3>
               <p>You see a visual direction within days, and we refine it together until it feels right.</p>
             </div>
             <div class="process-step">
-              <span class="process-step__num">03</span>
+              <span class="process-step__num" aria-hidden="true">03</span>
               <h3>Build</h3>
               <p>Hand-coded, fast and responsive — no bloated page builders, no mystery plugins.</p>
             </div>
             <div class="process-step">
-              <span class="process-step__num">04</span>
+              <span class="process-step__num" aria-hidden="true">04</span>
               <h3>Launch</h3>
               <p>Tested on real devices, live on your domain, with a walkthrough so you're never locked out.</p>
             </div>
@@ -770,7 +818,7 @@
         <p class="label reveal">About</p>
 
         <div class="about__text reveal" style="--d: 0.05s">
-          <h2 class="section__title">Considered, not complicated.</h2>
+          <h2 class="title section__title">Considered, <em>not complicated</em>.</h2>
           <p>
             I believe good design speaks clearly — it doesn't need to shout.
             Clean layouts, sharp words, honest presentation: that's what
@@ -797,17 +845,17 @@
     </section>
 
     <!-- =================================================================
-         CONTACT — the email is the destination of the whole page
+         CONTACT — big serif invitation, the email as the destination
          ================================================================= -->
     <section class="section" id="contact">
       <div class="container row">
         <p class="label reveal">Contact</p>
 
         <div>
-          <h2 class="contact__title reveal">Let's make something considered.</h2>
+          <h2 class="title contact__title reveal">Have a project in mind? <em>Let's talk.</em></h2>
           <p class="contact__sub reveal">
-            Tell me about your project — I reply within 24 hours with first
-            ideas and a clear quote. No pressure, no jargon.
+            Tell me about it — I reply within 24 hours with first ideas and
+            a clear quote. No pressure, no jargon.
           </p>
           <!-- Primary CTA, appearance #3 -->
           <a class="contact__email reveal" href="mailto:sadiqmanzoor.businness@gmail.com">sadiqmanzoor.businness@gmail.com</a>
@@ -822,7 +870,7 @@
        =================================================================== -->
   <footer class="footer">
     <div class="container footer__inner">
-      <p>&copy; 2026 SADIQ — designed, written &amp; hand-coded.</p>
+      <p>&copy; 2026 Sadiq — designed, written &amp; hand-coded.</p>
       <!-- TODO: LinkedIn and Dribbble are still placeholders -->
       <ul class="footer__links">
         <li><a href="#">LinkedIn</a></li>
