@@ -42,6 +42,7 @@ Every future `git push` to `main` redeploys the site automatically.
 
 - **Colors & fonts** — everything is defined once as CSS variables at the top
   of the `<style>` block in `index.html` (look for `:root`).
-- **Email** — search for `hello@example.com` (appears in the Contact section).
-- **Social links** — the footer's LinkedIn / GitHub / Dribbble links are
-  `href="#"` placeholders; swap in the real profile URLs.
+- **Email** — the Contact section's button links to
+  `sadiqmanzoor.businness@gmail.com`; search for that string to change it.
+- **Social links** — the footer's GitHub link is live; LinkedIn and Dribbble
+  are still `href="#"` placeholders — swap in the real profile URLs.

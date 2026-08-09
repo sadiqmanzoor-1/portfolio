@@ -599,6 +599,14 @@
       margin-bottom: 2.25rem;
     }
 
+    /* The email button holds a long address — on very narrow phones, cap it
+       at the screen width and allow a wrap rather than causing horizontal
+       scroll. On normal screens this rule never kicks in. */
+    .contact .btn {
+      max-width: 100%;
+      overflow-wrap: anywhere;
+    }
+
     /* =====================================================================
        13. FOOTER
        ===================================================================== */
@@ -903,9 +911,8 @@
           Tell me about your project — I reply within 24 hours with first
           ideas and a clear quote. No pressure, no jargon.
         </p>
-        <!-- Primary CTA, appearance #3.
-             TODO: replace hello@example.com with the real address -->
-        <a class="btn btn--primary" href="mailto:hello@example.com">hello@example.com</a>
+        <!-- Primary CTA, appearance #3 -->
+        <a class="btn btn--primary" href="mailto:sadiqmanzoor.businness@gmail.com">sadiqmanzoor.businness@gmail.com</a>
       </div>
     </section>
   </main>
@@ -916,10 +923,10 @@
   <footer class="footer">
     <div class="container footer__inner">
       <p>&copy; 2026 SADIQ — designed &amp; hand-coded, no builders.</p>
-      <!-- TODO: swap href="#" for the real profile URLs -->
+      <!-- TODO: LinkedIn and Dribbble are still placeholders -->
       <ul class="footer__links">
         <li><a href="#">LinkedIn</a></li>
-        <li><a href="#">GitHub</a></li>
+        <li><a href="https://github.com/sadiqmanzoor-1" target="_blank" rel="noopener noreferrer">GitHub</a></li>
         <li><a href="#">Dribbble</a></li>
       </ul>
     </div>
